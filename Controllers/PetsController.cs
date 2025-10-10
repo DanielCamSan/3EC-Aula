@@ -25,6 +25,7 @@ namespace FirstExam.Controllers
                 WeightKg=10
             },
             new Pet()
+
             {
                 Id=Guid.NewGuid(),
                 OwnerId=Guid.NewGuid(),
