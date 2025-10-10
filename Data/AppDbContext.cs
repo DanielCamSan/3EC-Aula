@@ -1,7 +1,5 @@
 ﻿using FirstExam.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 
 namespace FirstExam.Data
 {
@@ -22,7 +20,6 @@ namespace FirstExam.Data
                 p.Property(x => x.Breed).IsRequired().HasMaxLength(100);
                 p.Property(x => x.BirthDate).IsRequired();
                 p.Property(x => x.sex).IsRequired().HasMaxLength(20);
-                p.Property(x => x.WeightKg).HasPrecision(5, 2); // opcional
             });
         }
     }

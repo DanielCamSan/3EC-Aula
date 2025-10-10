@@ -1,4 +1,5 @@
-﻿using FirstExam.Models;
+﻿using FirstExam.Data;
+using FirstExam.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 
