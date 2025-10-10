@@ -9,42 +9,42 @@ namespace FirstExam.Services
         private readonly IAppointmentRepository _repo;
         public AppointmentService(IAppointmentRepository repo) { _repo = repo; }
 
-        public async Task<IEnumerable<AppointmentListDto>> GetAll()
+        public async Task<IEnumerable<object>> GetAll()
         {
             var appointments = await _repo.GetAll();
             return appointments
                 .OrderBy(a => a.ScheduledAt)
-                .Select(a => new AppointmentListDto(
+                .Select(a => new
+                {
                     a.Id,
                     a.PetId,
                     a.ScheduledAt,
                     a.Reason,
                     a.Status
-                ));
+                });
         }
 
-        public async Task<AppointmentDetailDto?> GetById(Guid id)
+        public async Task<object?> GetById(Guid id)
         {
             var appointment = await _repo.GetById(id);
             if (appointment is null) return null;
 
-            return new AppointmentDetailDto(
+            return new
+            {
                 appointment.Id,
                 appointment.PetId,
                 appointment.ScheduledAt,
                 appointment.Reason,
                 appointment.Status,
                 appointment.Notes
-            );
+            };
         }
 
-        public async Task<AppointmentDetailDto> Create(CreateAppointmentDto dto)
+        public async Task<object> Create(CreateAppointmentDto dto)
         {
-            // Validar que la fecha no sea en el pasado
             if (dto.ScheduledAt < DateTime.Now)
                 throw new InvalidOperationException("Appointment cannot be scheduled in the past.");
 
-            // Validar que el estado sea válido
             var validStatuses = new[] { "scheduled", "confirmed", "cancelled", "completed" };
             if (!validStatuses.Contains(dto.Status.ToLower()))
                 throw new InvalidOperationException("Invalid appointment status.");
@@ -61,17 +61,18 @@ namespace FirstExam.Services
 
             await _repo.Add(appointment);
 
-            return new AppointmentDetailDto(
+            return new
+            {
                 appointment.Id,
                 appointment.PetId,
                 appointment.ScheduledAt,
                 appointment.Reason,
                 appointment.Status,
                 appointment.Notes
-            );
+            };
         }
 
-        public async Task<AppointmentDetailDto?> Update(Guid id, UpdateAppointmentDto dto)
+        public async Task<object?> Update(Guid id, UpdateAppointmentDto dto)
         {
             var current = await _repo.GetById(id);
             if (current is null) return null;
@@ -91,14 +92,15 @@ namespace FirstExam.Services
 
             await _repo.Update(current);
 
-            return new AppointmentDetailDto(
+            return new
+            {
                 current.Id,
                 current.PetId,
                 current.ScheduledAt,
                 current.Reason,
                 current.Status,
                 current.Notes
-            );
+            };
         }
 
         public async Task<bool> Delete(Guid id)
@@ -110,18 +112,19 @@ namespace FirstExam.Services
             return await _repo.Delete(id);
         }
 
-        public async Task<IEnumerable<AppointmentListDto>> GetByPetId(Guid petId)
+        public async Task<IEnumerable<object>> GetByPetId(Guid petId)
         {
             var appointments = await _repo.GetByPetId(petId);
             return appointments
                 .OrderBy(a => a.ScheduledAt)
-                .Select(a => new AppointmentListDto(
+                .Select(a => new
+                {
                     a.Id,
                     a.PetId,
                     a.ScheduledAt,
                     a.Reason,
                     a.Status
-                ));
+                });
         }
 
         public async Task<bool> UpdateStatus(Guid id, string status)
