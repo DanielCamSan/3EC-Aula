@@ -4,6 +4,17 @@ namespace FirstExam.Models.dtos
 {
     public class OwnersDtos
     {
+        public record OwnerListDto(
+            Guid Id,
+            string Email,
+            string FullName
+        );
+        public record OwnerDetailDto(
+       Guid Id,
+       string Email,
+       string FullName
+   );
+
         public record CreateOwnerDto
         {
             public Guid Id { get; init; }
