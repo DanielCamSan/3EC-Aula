@@ -1,11 +1,8 @@
-﻿using System;
 using System.ComponentModel.DataAnnotations;
-
-namespace FirstExam.Models
+namespace FirstExam.Models.Dtos
 {
-    public class Owner
+    public class CreateOwnerDto
     {
-        public Guid Id { get; set; }
         [Required, EmailAddress]
         public string Email { get; set; } = string.Empty;
         [Required, StringLength(200)]
@@ -14,5 +11,4 @@ namespace FirstExam.Models
         public string Phone { get; set; } = string.Empty;
         public bool Active { get; set; } = true;
     }
-};
-
+}
