@@ -9,6 +9,7 @@ namespace FirstExam.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Owner> Owners => Set<Owner>();
+        public DbSet<Appointment> Appointments => Set<Appointment>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -19,6 +20,16 @@ namespace FirstExam.Data
                 o.Property(x => x.FullName).IsRequired().HasMaxLength(200);
                 o.Property(x => x.Phone).IsRequired();
                 o.Property(x => x.Active);
+            });
+
+            modelBuilder.Entity<Appointment>(a =>
+            {
+                a.HasKey(x => x.Id);
+                a.Property(x => x.Status).IsRequired().HasMaxLength(200);
+                a.Property(x => x.Notes).IsRequired();
+                a.HasIndex(x => x.PetId);
+                a.Property(x => x.ScheduledAt).IsRequired();
+                a.Property(x => x.Reason).IsRequired();
             });
         }
     }
