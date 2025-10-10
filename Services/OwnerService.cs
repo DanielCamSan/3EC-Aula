@@ -7,6 +7,10 @@ namespace FirstExam.Services
     public class OwnerService:IOwnerService
     {
         private readonly IOwnerRepository _repo;
+        public OwnerService(IOwnerRepository repo)
+        {
+            _repo = repo;
+        }
 
         public async Task<Owner> Create(CreateOwnerDto dto)
         {
@@ -36,6 +40,11 @@ namespace FirstExam.Services
         public async Task<Owner?> GetById(Guid id)
         {
             var owner = await _repo.GetById(id);
+            return owner;
+        }
+        public async Task<Owner?> Update(Guid id, UpdateOwnerDto dto)
+        {
+            var owner = await _repo.Update(id, dto);
             return owner;
         }
     }
