@@ -1,5 +1,7 @@
-﻿
+﻿using FirstExam.Models;
+using FirstExam.Models.dtos;
 using FirstExam.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstExam.Repositories
 {
@@ -11,31 +13,35 @@ namespace FirstExam.Repositories
             _context = context;
         }
 
-        public Task Add(Pet pet)
+        public async Task Add(Pet pet)
         {
-            await _context.Pets.AddAsync(book);
+            await _context.Pets.AddAsync(pet);
             await _context.SaveChangesAsync();
         }
 
-        public Task Delete(Guid id)
+        public async Task Delete(Guid id)
         {
-            var book = await _context.Pets.FirstOrDefaultAsync(x => x.Id == id);
-            if (book != null)
+            var pet = await _context.Pets.FirstOrDefaultAsync(x => x.Id == id);
+            if (pet != null)
             {
-                _context.Pets.Remove(book);
+                _context.Pets.Remove(pet);
                 await _context.SaveChangesAsync();
             }
         }
-
-        public Task<IEnumerable<Pet>> GetAll()
+        public async Task<IEnumerable<Pet>> GetAll()
         {
-            return await _context.Pets.AsNoTracking()
-        .Include(b => b.Author).ToListAsync();
+            return await _context.Pets.AsNoTracking().ToListAsync();
         }
 
-        public Task<Pet?> GetById(Guid id)
+        public async Task<Pet?> GetById(Guid id)
         {
             return await _context.Pets.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task Update(Pet pet)
+        {
+            _context.Pets.Update(pet);
+            await _context.SaveChangesAsync();
         }
     }
 }
