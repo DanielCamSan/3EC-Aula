@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using FirstExam.Models;
+using System.Reflection;
+using static Appointment;
 
 namespace FirstExam.Controllers
 {
@@ -10,176 +8,144 @@ namespace FirstExam.Controllers
     [Route("api/v1/[controller]")]
     public class AppointmentsController : ControllerBase
     {
-        // --- "DB" en memoria para el examen/demo ---
-        private static readonly List<Appointment> _db = new()
+        public static readonly List<Appointment> appointments = new()
         {
-            new Appointment {
-                Id = Guid.Parse("00000000-0000-0000-0000-0000000000A1"),
-                PetId = Guid.Parse("00000000-0000-0000-0000-0000000000AA"),
-                ScheduledAt = DateTime.UtcNow.AddDays(1),
-                Reason = "vacunación", Status = "scheduled", Notes = "Primera dosis"
-            },
-            new Appointment {
-                Id = Guid.Parse("00000000-0000-0000-0000-0000000000B1"),
-                PetId = Guid.Parse("00000000-0000-0000-0000-0000000000BB"),
-                ScheduledAt = DateTime.UtcNow.AddHours(8),
-                Reason = "control", Status = "scheduled"
-            },
-            new Appointment {
-                Id = Guid.Parse("00000000-0000-0000-0000-0000000000C1"),
-                PetId = Guid.Parse("00000000-0000-0000-0000-0000000000BB"),
-                ScheduledAt = DateTime.UtcNow.AddDays(-2),
-                Reason = "curación", Status = "completed"
-            }
+            new Appointment { Id = Guid.NewGuid(), PetId = Guid.NewGuid(), ScheduledAt = DateTime.Now.AddHours(4), Reason = "Vacunación", Status="scheduled", Notes = "Primera dosis" },
+            new Appointment { Id = Guid.NewGuid(), PetId = Guid.NewGuid(), ScheduledAt = DateTime.Now.AddDays(1), Reason = "Control",     Status="scheduled", Notes = "Traer carnet" }
         };
 
-        // --- Helpers ---
-        private static (int page, int limit) Normalize(int page, int limit)
+        // --- Helpers: paginación/orden/meta/wrap ---
+        private static (int page, int limit) NormalizePage(int? page, int? limit)
         {
-            page = Math.Max(1, page);
-            limit = Math.Clamp(limit <= 0 ? 10 : limit, 1, 100);
-            return (page, limit);
+            var p = page.GetValueOrDefault(1); if (p < 1) p = 1;
+            var l = limit.GetValueOrDefault(10); if (l < 1) l = 1; if (l > 100) l = 100;
+            return (p, l);
         }
 
-        private static IOrderedEnumerable<Appointment> ApplySort(IEnumerable<Appointment> q, string sort, string order)
+        private static IEnumerable<T> OrderByProp<T>(IEnumerable<T> src, string? sort, string? order)
         {
+            if (string.IsNullOrWhiteSpace(sort)) return src;
+            var prop = typeof(T).GetProperty(sort, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            if (prop is null) return src;
+
             bool desc = string.Equals(order, "desc", StringComparison.OrdinalIgnoreCase);
-            sort = (sort ?? "scheduledAt").ToLowerInvariant();
-
-            Func<Appointment, object> key = sort switch
-            {
-                "reason" => a => a.Reason,
-                "status" => a => a.Status,
-                "petid" => a => a.PetId,
-                "id" => a => a.Id,
-                _ => a => a.ScheduledAt
-            };
-
-            return desc ? q.OrderByDescending(key) : q.OrderBy(key);
+            return desc ? src.OrderByDescending(x => prop.GetValue(x)) : src.OrderBy(x => prop.GetValue(x));
         }
 
-        // --- GET /api/v1/appointments
-        // Soporta: page, limit, sort, order, status, from, to, search
-        [HttpGet]
-        public IActionResult GetAll(
-            [FromQuery] int page = 1,
-            [FromQuery] int limit = 10,
-            [FromQuery] string? sort = "scheduledAt",
-            [FromQuery] string? order = "asc",
-            [FromQuery] string? status = null,
-            [FromQuery] DateTime? from = null,
-            [FromQuery] DateTime? to = null,
-            [FromQuery] string? search = null
-        )
-        {
-            (page, limit) = Normalize(page, limit);
-
-            IEnumerable<Appointment> q = _db;
-
-            if (!string.IsNullOrWhiteSpace(status))
-                q = q.Where(a => a.Status.Equals(status, StringComparison.OrdinalIgnoreCase));
-
-            if (from.HasValue) q = q.Where(a => a.ScheduledAt >= from.Value);
-            if (to.HasValue) q = q.Where(a => a.ScheduledAt <= to.Value);
-
-            if (!string.IsNullOrWhiteSpace(search))
-                q = q.Where(a => a.Reason.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                                 (a.Notes != null && a.Notes.Contains(search, StringComparison.OrdinalIgnoreCase)));
-
-            var total = q.Count();
-            var ordered = ApplySort(q, sort ?? "scheduledAt", order ?? "asc");
-            var items = ordered.Skip((page - 1) * limit).Take(limit).ToList();
-
-            return Ok(new
+        private static object Wrap(object? data, int? page = null, int? limit = null, int? total = null)
+            => new
             {
-                data = items,
+                data,
                 meta = new
                 {
                     page,
                     limit,
                     total,
-                    sort = sort ?? "scheduledAt",
-                    order = order ?? "asc"
+                    count = data switch
+                    {
+                        IEnumerable<object> e => e.Count(),
+                        System.Collections.IEnumerable ie => ie.Cast<object>().Count(),
+                        null => 0,
+                        _ => 1
+                    }
                 }
-            });
+            };
+
+        // --- GET /api/v1/appointments?Page=1&Limit=10&Sort=ScheduledAt&Order=asc&q=vacuna ---
+        [HttpGet]
+        public IActionResult GetAll(
+            [FromQuery] int? Page,
+            [FromQuery] int? Limit,
+            [FromQuery] string? Sort,
+            [FromQuery] string? Order,
+            [FromQuery] string? q)
+        {
+            var (p, l) = NormalizePage(Page, Limit);
+
+            IEnumerable<Appointment> query = appointments;
+
+            // Filtro “q” por Reason, Status y Notes
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                query = query.Where(a =>
+                    (a.Reason?.Contains(q, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (a.Status?.Contains(q, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (a.Notes?.Contains(q, StringComparison.OrdinalIgnoreCase) ?? false));
+            }
+
+            // Orden dinámico por cualquier propiedad pública (Id, PetId, ScheduledAt, Reason, Status, Notes)
+            query = OrderByProp(query, Sort, Order);
+
+            var total = query.Count();
+            var data = query.Skip((p - 1) * l).Take(l).ToList();
+
+            return Ok(Wrap(data, p, l, total));
         }
 
-        // --- GET /api/v1/appointments/{id}
+        // --- GET /api/v1/appointments/{id} ---
         [HttpGet("{id:guid}")]
-        public IActionResult GetOne(Guid id)
+        public IActionResult GetOne([FromRoute] Guid id)
         {
-            var a = _db.FirstOrDefault(x => x.Id == id);
-            return a == null
-                ? NotFound(new { error = "Appointment not found", status = 404 })
-                : Ok(new { data = a });
+            var appointment = appointments.FirstOrDefault(a => a.Id == id);
+            if (appointment is null)
+                return NotFound(Wrap(new { error = "Appointment not found", status = 404 }));
+
+            return Ok(Wrap(appointment));
         }
 
-        // --- POST /api/v1/appointments
+        // --- POST /api/v1/appointments ---
         [HttpPost]
-        public IActionResult Create([FromBody] Appointment input)
+        public IActionResult Create([FromBody] CreateAppointmentDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new { error = "Invalid data", details = ModelState });
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
-            // Evitar solapamiento básico por Pet en misma hora exacta
-            bool clash = _db.Any(a => a.PetId == input.PetId && a.ScheduledAt == input.ScheduledAt && a.Status != "cancelled");
-            if (clash)
-                return Conflict(new { error = "Time slot already booked for this pet", status = 409 });
+            var appointment = new Appointment
+            {
+                Id = Guid.NewGuid(),
+                PetId = dto.PetId,                                            // usar el enviado
+                ScheduledAt = dto.ScheduledAt,                               // usar el enviado
+                Reason = dto.Reason?.Trim() ?? string.Empty,
+                Status = dto.Status?.Trim() ?? "scheduled",
+                Notes = dto.Notes?.Trim()
+            };
 
-            input.Id = input.Id == Guid.Empty ? Guid.NewGuid() : input.Id;
-            input.Status = string.IsNullOrWhiteSpace(input.Status) ? "scheduled" : input.Status;
+            appointments.Add(appointment);
 
-            _db.Add(input);
-            return CreatedAtAction(nameof(GetOne), new { id = input.Id }, new { data = input });
+            return CreatedAtAction(nameof(GetOne), new { id = appointment.Id }, Wrap(appointment));
         }
 
-        // --- PUT /api/v1/appointments/{id}
+        // --- PUT /api/v1/appointments/{id} ---
         [HttpPut("{id:guid}")]
-        public IActionResult Update(Guid id, [FromBody] Appointment input)
+        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateAppointmentDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new { error = "Invalid data", details = ModelState });
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
-            var a = _db.FirstOrDefault(x => x.Id == id);
-            if (a == null) return NotFound(new { error = "Appointment not found", status = 404 });
+            var idx = appointments.FindIndex(a => a.Id == id);
+            if (idx == -1)
+                return NotFound(Wrap(new { error = "Appointment not found", status = 404 }));
 
-            // Revisa choque horario si cambia fecha/hora o pet
-            bool clash = _db.Any(x => x.Id != id && x.PetId == input.PetId && x.ScheduledAt == input.ScheduledAt && x.Status != "cancelled");
-            if (clash)
-                return Conflict(new { error = "Time slot already booked for this pet", status = 409 });
+            // Actualizamos respetando lo enviado
+            var current = appointments[idx];
+            current.PetId = dto.PetId;
+            current.ScheduledAt = dto.ScheduledAt;
+            current.Reason = dto.Reason?.Trim() ?? current.Reason;
+            current.Status = dto.Status?.Trim() ?? current.Status;
+            current.Notes = dto.Notes?.Trim();
 
-            a.PetId = input.PetId;
-            a.ScheduledAt = input.ScheduledAt;
-            a.Reason = input.Reason;
-            a.Status = string.IsNullOrWhiteSpace(input.Status) ? a.Status : input.Status;
-            a.Notes = input.Notes;
+            appointments[idx] = current;
 
-            return Ok(new { data = a });
+            return Ok(Wrap(current));
         }
 
-        // --- PATCH /api/v1/appointments/{id}/status
-        [HttpPatch("{id:guid}/status")]
-        public IActionResult ChangeStatus(Guid id, [FromBody] dynamic body)
-        {
-            var a = _db.FirstOrDefault(x => x.Id == id);
-            if (a == null) return NotFound(new { error = "Appointment not found", status = 404 });
-
-            string? status = body?.status;
-            if (string.IsNullOrWhiteSpace(status))
-                return BadRequest(new { error = "Missing 'status' field" });
-
-            a.Status = status!;
-            return Ok(new { data = a });
-        }
-
-        // --- DELETE /api/v1/appointments/{id}
+        // --- DELETE /api/v1/appointments/{id} ---
         [HttpDelete("{id:guid}")]
-        public IActionResult Delete(Guid id)
+        public IActionResult Delete([FromRoute] Guid id)
         {
-            var removed = _db.RemoveAll(x => x.Id == id);
-            return removed == 0
-                ? NotFound(new { error = "Appointment not found", status = 404 })
-                : NoContent();
+            var removed = appointments.RemoveAll(a => a.Id == id);
+            if (removed == 0)
+                return NotFound(Wrap(new { error = "Appointment not found", status = 404 }));
+
+            return NoContent();
         }
     }
 }
