@@ -1,7 +1,4 @@
-﻿using FirstExam.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System.Net.Sockets;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace FirstExam.Data
 {
@@ -9,19 +6,11 @@ namespace FirstExam.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-
         }
-        public DbSet<Appointment> Appointments => Set<Appointment>();
+        public DbSet<Pet> Pets => Set<Pet>();   
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Appointment>(b =>
-            {
-                b.HasKey(x => x.Id);
-                b.Property(x => x.Status).IsRequired().HasMaxLength(200);
-                b.Property(x => x.Notes).IsRequired();
-            });
-
-      
         }
     }
 }
