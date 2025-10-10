@@ -25,6 +25,15 @@ namespace FirstExam.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<IEnumerable<Owner>> GetAll()
+        {
+            return await _context.Owners.AsNoTracking()
+            .Include(b => b.FullName).ToListAsync();
+        }
+        public async Task<Owner?> GetById(Guid id)
+        {
+            return await _context.Owners.FirstOrDefaultAsync(x => x.Id == id);
+        }
 
     }
 }
