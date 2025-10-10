@@ -1,3 +1,6 @@
+using FirstExam.Repositories;
+using FirstExam.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(
@@ -9,6 +12,8 @@ builder.Services.AddCors(
         });
     });
 
+builder.Services.AddSingleton<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
 builder.Services.AddControllers();
 
