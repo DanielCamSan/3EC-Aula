@@ -9,7 +9,7 @@ namespace FirstExam.Repository
         Task<IEnumerable<Owner>> GetAll();
         Task<Owner?> GetById(Guid id);
         Task Create(CreateOwnerDto dto);
-        Task Update(Guid id, UpdateOwnerDto dto);
+        Task Update(Guid id, UpdateOwnerDto owner);
         Task Delete(Guid id);
     }
 }

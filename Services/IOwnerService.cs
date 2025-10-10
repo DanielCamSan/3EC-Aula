@@ -8,8 +8,8 @@ namespace FirstExam.Services
     {
         Task<IEnumerable<Owner>> GetAll();
         Task<Owner?> GetById(Guid id);
-        Task<Owner> Create(CreateOwnerDto dto);
-        Task Update(Guid id, UpdateOwnerDto owner);
+        Task Create(Owner owner);
+        Task Update(Owner owner);
         Task Delete(Guid id);
     }
 }
