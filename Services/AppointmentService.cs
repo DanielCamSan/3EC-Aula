@@ -1,6 +1,6 @@
 ﻿using FirstExam.Models;
 using FirstExam.Models.DTOs;
-using FirstExam.Repositories;
+using FirstExam.Repository;
 using static FirstExam.Services.AppointmentService;
 
 namespace FirstExam.Services
