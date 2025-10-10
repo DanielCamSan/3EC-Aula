@@ -1,0 +1,56 @@
+﻿using FirstExam.Models;
+using FirstExam.Models.DTOs;
+using FirstExam.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using static Appointment;
+using static FirstExam.Services.AppointmentService;
+
+namespace FirstExam.Controllers
+{
+    [ApiController]
+    [Route("api/v1/[controller]")]
+    public class AppointmentsController : ControllerBase
+    {
+        private readonly IAppointmentService _service;
+        public AppointmentsController(IAppointmentService service)
+        {
+            _service = service;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var items = await _service.GetAll();
+            return Ok(items);
+        }
+
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetOne(Guid id)
+        {
+            var Appointment = await _service.GetById(id);
+            return Appointment == null
+                ? NotFound(new { error = "Appointment not found", status = 404 })
+                : Ok(Appointment);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateAppointmentDto dto)
+        {
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+            var Appointment = await _service.Create(dto);
+            return CreatedAtAction(nameof(GetOne), new { id = Appointment.Id }, Appointment);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var success = await _service.Delete(id);
+            return success
+                ? NoContent()
+                : NotFound(new { error = "Appointment not found", status = 404 });
+        }
+    }   
+}
+  
