@@ -15,7 +15,8 @@ builder.Services.AddDbContext<FirstExam.Data.AppDbContext>(opt =>
 
 builder.Services.AddScoped<FirstExam.Repositories.IOwnerRepository, FirstExam.Repositories.OwnerRepository>();
 builder.Services.AddScoped<FirstExam.Services.IOwnerService, FirstExam.Services.OwnerService>();
-
+builder.Services.AddScoped<FirstExam.Services.IAppointmentServices, FirstExam.Services.AppointmentServices>();
+builder.Services.AddScoped<FirstExam.Repositories.IAppointmentRepository, FirstExam.Repositories.AppointmentRepository>();
 var app = builder.Build();
 // Dependency Injection
 
