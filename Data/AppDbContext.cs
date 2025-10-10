@@ -39,7 +39,7 @@ namespace FirstExam.Data
             modelBuilder.Entity<Appointment>(b =>
             {
                 b.HasKey(x => x.Id);
-                b.Property(x => x.PetId).IsRequired();
+                b.Property(x => x.PetId).IsRequired(); 
                 b.Property(x => x.ScheduledAt).IsRequired();
                 b.Property(x => x.Reason).IsRequired().HasMaxLength(100);
                 b.Property(x => x.Status).IsRequired().HasMaxLength(100);
