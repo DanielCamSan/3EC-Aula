@@ -1,48 +1,52 @@
-﻿using FirstExam.Models;
-using System.Collections.Concurrent;
+﻿using FirstExam.Data;
+using FirstExam.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstExam.Repositories
 {
     public class AppointmentRepository : IAppointmentRepository
     {
-        private static readonly List<Appointment> _appointments = new()
+        private readonly AppDbContext _context;
+
+        public AppointmentRepository(AppDbContext context)
         {
-            new Appointment() { Id = Guid.NewGuid(), PetId = Guid.NewGuid(), ScheduledAt = DateTime.Now , Reason = "a", Notes = "a"},
-            new Appointment() { Id = Guid.NewGuid(), PetId = Guid.NewGuid(), ScheduledAt = DateTime.Now , Reason = "b", Notes = "b"}
-        };
+            _context = context;
+        }
 
         public async Task<IEnumerable<Appointment>> GetAllAsync()
         {
-            return await Task.FromResult(_appointments);
+            return await _context.Appointments.ToListAsync();
         }
 
         public async Task<Appointment?> GetByIdAsync(Guid id)
         {
-            var appointment = _appointments.FirstOrDefault(a => a.Id == id);
-            return await Task.FromResult(appointment);
+            return await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<Appointment> CreateAsync(Appointment appointment)
         {
-            _appointments.Add(appointment);
-            return await Task.FromResult(appointment);
+            await _context.Appointments.AddAsync(appointment);
+            await _context.SaveChangesAsync();
+            return appointment;
         }
 
         public async Task<Appointment?> UpdateAsync(Guid id, Appointment appointment)
         {
-            var index = _appointments.FindIndex(a => a.Id == id);
-            if (index == -1)
-            {
-                return null;
-            }
-            _appointments[index] = appointment;
-            return await Task.FromResult(appointment);
+            _context.Appointments.Update(appointment);
+            await _context.SaveChangesAsync();
+            return appointment;
         }
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var removedCount = _appointments.RemoveAll(a => a.Id == id);
-            return await Task.FromResult(removedCount > 0);
+            var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+            if (appointment == null)
+            {
+                return false;
+            }
+            _context.Appointments.Remove(appointment);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

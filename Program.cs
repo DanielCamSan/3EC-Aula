@@ -1,5 +1,7 @@
+using FirstExam.Data;
 using FirstExam.Repositories;
 using FirstExam.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +14,13 @@ builder.Services.AddCors(
         });
     });
 
-builder.Services.AddSingleton<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+
 
 builder.Services.AddControllers();
 
