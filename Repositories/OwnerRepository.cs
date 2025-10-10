@@ -7,11 +7,6 @@ namespace FirstExam.Repositories
     public class OwnerRepository : IOwnerRepository
     {
         private readonly AppDbContext _context;
-        public OwnerRepository(AppDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task Add(Owner owner)
         {
             await _context.Owners.AddAsync(owner);
@@ -47,8 +42,7 @@ namespace FirstExam.Repositories
         }
         public async Task<IEnumerable<Owner>> GetAll()
         {
-            return await _context.Owners.AsNoTracking()
-            .Include(b => b.FullName).ToListAsync();
+            return await _context.Owners.ToListAsync();
         }
         public async Task<Owner?> GetById(Guid id)
         {
