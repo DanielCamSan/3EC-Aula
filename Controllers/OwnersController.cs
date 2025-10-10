@@ -70,7 +70,7 @@ namespace FirstExam.Controllers
             return CreatedAtAction(nameof(GetOne), new {id=owner.Id},owner);
         }
         [HttpPut("{id:guid}")]
-        public ActionResult<Owner> Update(Guid id, [FromBody] UpdateOwnerDto dto)
+        public ActionResult<Owner> Update(Guid id, [FromBody] gitUpdateOwnerDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
             var index = owners.FindIndex(a => a.Id == id);

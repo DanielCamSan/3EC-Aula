@@ -2,14 +2,14 @@
 using FirstExam.Models.dtos;
 using Microsoft.Extensions.Logging;
 
-namespace FirstExam.Services
+namespace FirstExam.Repository
 {
-    public interface IOwnerService
+    public interface IOwnerRepository
     {
         Task<IEnumerable<Owner>> GetAll();
         Task<Owner?> GetById(Guid id);
-        Task<Owner> Create(CreateOwnerDto dto);
-        Task Update(Guid id, UpdateOwnerDto owner);
+        Task Create(CreateOwnerDto dto);
+        Task Update(Guid id, UpdateOwnerDto dto);
         Task Delete(Guid id);
     }
 }
