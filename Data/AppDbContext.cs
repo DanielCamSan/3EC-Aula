@@ -21,4 +21,6 @@ namespace FirstExam.Data
                 a.Property(x => x.Reason).IsRequired();
             });
         }
+    }
+
 }
