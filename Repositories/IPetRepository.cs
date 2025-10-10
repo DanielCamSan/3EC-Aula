@@ -1,6 +1,15 @@
-﻿namespace FirstExam.Repositories
+﻿using FirstExam.Models;
+
+namespace FirstExam.Repositories
 {
-    public class IPetRepository
+    public interface IPetRepository
     {
+        Task <IEnumerable<Pet>> GetAll();
+
+        Task<Pet?> GetById(Guid Id);
+
+        Task Add(Pet pet);
+        Task Delete(Pet pet);
+
     }
 }

@@ -17,6 +17,8 @@ namespace FirstExam.Services
             return pet;
         }
 
+
+
         public async Task<bool> Delete(Guid id)
         {
             var existing = await _repo.GetById(id);
