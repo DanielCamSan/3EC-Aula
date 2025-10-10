@@ -1,12 +1,13 @@
-﻿using apiwithdb.Models;
+﻿using FirstExam.Models;
 
-namespace apiwithdb.Repositories
+namespace FirstExam.Repositories
 {
-    public interface IPetsRepository
+    public interface IPetRepository
     {
-        Task<IEnumerable<Book>> GetAll();
-        Task<Book?> GetById(Guid id);
-        Task Add(Book book);
+        Task<IEnumerable<Pet>> GetAll();
+        Task<Pet?> GetById(Guid id);
+        Task Add(Pet Pet);
         Task Delete(Guid id);
+        Task Update(Pet Pet);
     }
 }

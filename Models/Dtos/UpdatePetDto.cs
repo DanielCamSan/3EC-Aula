@@ -18,6 +18,7 @@ namespace FirstExam.Models.Dtos
         public required string sex { get; set; }
         [Range(0, 500)]
         public decimal? WeightKg { get; set; }
+        public Guid Id { get; internal set; }
     }
 
 }

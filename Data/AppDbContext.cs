@@ -1,20 +1,20 @@
-﻿using apiwithdb.Models;
+﻿using FirstExam.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
-namespace apiwithdb.Data
+namespace FirstExam.Data
 {
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
-        public DbSet<Book> Books => Set<Book>();
+        public DbSet<Pet> Pets => Set<Pet>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Book>(b =>
+            modelBuilder.Entity<Pet>(b =>
             {
                 b.HasKey(x => x.Id);
                 b.Property(x => x.Title).IsRequired().HasMaxLength(200);
