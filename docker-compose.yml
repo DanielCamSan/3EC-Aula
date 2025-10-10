@@ -1,6 +1,16 @@
-﻿namespace FirstExam
-{
-    public class docker_compose
-    {
-    }
-}
+﻿services:
+  db:
+    image: postgres:16
+    container_name: vet_db_pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vet_db
+      POSTGRES_USER: vet_user
+      POSTGRES_PASSWORD: yourstrongpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - vet_data:/var/lib/postgresql/data
+
+volumes:
+  vet_data:
