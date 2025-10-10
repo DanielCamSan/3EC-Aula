@@ -1,4 +1,5 @@
 ﻿using FirstExam.Models;
+using FirstExam.Models.dtos;
 
 namespace FirstExam.Repositories
 {
