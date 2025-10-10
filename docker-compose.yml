@@ -2,13 +2,13 @@ services:
   db: 
     image: postgres:16
     container_name: veterinaria_pg 
-    restar: unless-stopped
+    restart: unless-stopped
     environment:
       POSTGRES_DB: veterinaria_db
       POSTGRES_USER: veterinaria_user
       POSTGRES_PASSWORD: supersecret
     ports: 
-      -"5431:5432"
+      - "5432:5432"
     volumes:
       - veterinaria_data:/var/lib/postgresql/data
     healthcheck:
