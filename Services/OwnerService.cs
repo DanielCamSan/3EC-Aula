@@ -1,6 +1,25 @@
-﻿namespace FirstExam.Services
+﻿using FirstExam.Models;
+using FirstExam.Models.dtos;
+using FirstExam.Repositories;
+
+namespace FirstExam.Services
 {
-    public class OwnerService
+    public class OwnerService:IOwnerService
     {
+        private readonly IOwnerRepository _repo;
+
+        public async Task<Owner> Create(CreateOwnerDto dto)
+        {
+            var owner = new Owner
+            {
+                Id = Guid.NewGuid(),
+                Email = dto.Email.Trim(),
+                FullName = dto.FullName.Trim(),
+                Phone = dto.Phone,
+                Active=dto.Active,
+            };
+            await _repo.Add(owner);
+            return owner;
+        }
     }
 }
