@@ -16,6 +16,15 @@ namespace FirstExam.Repositories
             await _context.Owners.AddAsync(owner);
             await _context.SaveChangesAsync();
         }
+        public async Task Delete(Guid id)
+        {
+            var owner = await _context.Owners.FirstOrDefaultAsync(x => x.Id == id);
+            if (owner != null)
+            {
+                _context.Owners.Remove(owner);
+                await _context.SaveChangesAsync();
+            }
+        }
 
     }
 }
