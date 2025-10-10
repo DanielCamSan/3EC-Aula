@@ -1,9 +1,16 @@
 ﻿using FirstExam.Models.DTO;
+using FirstExam.Repositories;
 
 namespace FirstExam.Services
 {
     public class PetService : IPetService
     {
+        private readonly IPetRepository _repo;
+
+        public PetService(IPetRepository repo)
+        {
+            _repo = repo;
+        }
 
         public async Task<Pet> Create(CreatePetDto dto)
         {
