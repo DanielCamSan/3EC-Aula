@@ -1,4 +1,3 @@
-@"
 # Visual Studio
 .vs/
 *.suo
@@ -16,4 +15,6 @@ Release/
 TestResult*/
 *.nupkg
 *.log
-"@ | Out-File -Encoding utf8 .gitignore
+
+# EF Core Migrations
+/Migrations/
