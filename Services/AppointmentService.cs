@@ -16,13 +16,15 @@ namespace FirstExam.Services
             }
             public async Task<Appointment> Create(CreateAppointmentDto dto)
             {
-                if (dto.Year < 1900)
-                {
-                    throw new InvalidOperationException("Year must be between 1900 and the current year.");
-                }
+            
                 var Appointment = new Appointment
                 {
-                    //do later 
+                    Id = Guid.NewGuid(),
+                    PetId = dto.PetId,
+                    ScheduledAt = dto.ScheduledAt,
+                    Reason = dto.Reason,    
+                    Status = dto.Status,
+                    Notes = dto.Notes
                 };
                 await _repo.Add(Appointment);
                 return Appointment;
