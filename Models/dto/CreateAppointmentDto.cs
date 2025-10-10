@@ -10,8 +10,8 @@ namespace FirstExam.Models.dto
             [Required, StringLength(100)]
             public string Reason { get; init; } = string.Empty;
 
-            [Required, StringLength(100)]
-            public string Status { get; init; } = string.Empty
+        [Required, StringLength(100)]
+        public string Status { get; init; } = string.Empty;
             public string? Notes { get; init; }
     
     }
