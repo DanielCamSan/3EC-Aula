@@ -30,19 +30,32 @@ namespace FirstExam.Services
             return true;
         }
 
-        public Task<IEnumerable<Pet>> GetAll()
+        public async Task<IEnumerable<Pet>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _repo.GetAll();
         }
 
-        public Task<Pet?> GetById(Guid id)
+        public async Task<Pet?> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            var book = await _repo.GetById(id);
+            return book;
         }
 
-        public Task<Pet> Update(UpdatePetDto dto)
+        public async Task<Pet?> Update(UpdatePetDto dto)
         {
-            throw new NotImplementedException();
+            var existing = await _repo.GetById(id);
+            if (existing == null) return null;
+
+            existing.OwnerId = dto.OwnerId;
+            existing.Name = dto.Name.Trim();
+            existing.Species = dto.Species.Trim();
+            existing.Breed = dto.Breed.Trim();
+            existing.BirthDate = dto.BirthDate;
+            existing.sex = dto.sex.Trim();
+            existing.WeightKg = dto.WeightKg;
+
+            await _repo.Update(existing);
+            return existing;
         }
     }
 }
