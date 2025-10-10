@@ -41,7 +41,7 @@ namespace FirstExam.Services
             return book;
         }
 
-        public async Task<Pet?> Update(UpdatePetDto dto)
+        public async Task<Pet?> Update(Guid id, UpdatePetDto dto)
         {
             var existing = await _repo.GetById(id);
             if (existing == null) return null;

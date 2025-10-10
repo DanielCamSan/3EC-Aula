@@ -8,7 +8,7 @@ namespace FirstExam.Services
         Task<IEnumerable<Pet>> GetAll();
         Task<Pet?> GetById(Guid id);
         Task<Pet> Create(CreatePetDto dto);
-        Task<Pet?> Update(UpdatePetDto dto);
+        Task<Pet?> Update(Guid id, UpdatePetDto dto);
         Task<bool> Delete(Guid id);
     }
 }
