@@ -1,6 +1,6 @@
 @FirstExam_HostAddress = http://localhost:5050
 
-GET {{FirstExam_HostAddress}}/weatherforecast/
+GET {{FirstExam_HostAddress}}/api/v1/pets/
 Accept: application/json
 
 ###

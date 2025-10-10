@@ -7,6 +7,12 @@ namespace FirstExam.Repositories
     public class PetRepository : IPetRepository
     {
         private readonly AppDbContext _context;
+
+        public PetRepository(AppDbContext context)
+        {
+            _context = context;
+        }
+
         public async Task Add(Pet pet)
         {
             await _context.Pets.AddAsync(pet);
@@ -39,16 +45,14 @@ namespace FirstExam.Repositories
 
             if (pet == null) return null;
 
-            pet = new Pet
-            {
-                OwnerId = dto.OwnerId,
-                Name = dto.Name,
-                Species = dto.Species,
-                Breed = dto.Breed,
-                BirthDate = dto.BirthDate,
-                sex = dto.sex,
-                WeightKg = dto.WeightKg != null ? dto.WeightKg : 0,
-            };
+            pet.OwnerId = dto.OwnerId;
+            pet.Name = dto.Name;
+            pet.Species = dto.Species;
+            pet.Breed = dto.Breed;
+            pet.BirthDate = dto.BirthDate;
+            pet.sex = dto.sex;
+            pet.WeightKg = dto.WeightKg != null ? dto.WeightKg : 0;
+            
 
             _context.Pets.Update(pet);
             await _context.SaveChangesAsync();
