@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace FirstExam.Controllers
 {
     [ApiController]
-    [Route("api/v1/[Controller]")]
+    [Route("api/v1/[Controller]")]//e
     public class OwnersController : Controller
     {
         public static readonly List<Owner> owners = new()
