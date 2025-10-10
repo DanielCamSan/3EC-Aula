@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 
 namespace FirstExam.Services
 {
-    public interface IOwnerService
+    public interface IOwnerServices
     {
         Task<IEnumerable<Owner>> GetAll();
         Task<Owner?> GetById(Guid id);
-        Task Create(Owner owner);
-        Task Update(Owner owner);
+        Task Create(CreateOwnerDto dto);
+        Task Update(Guid id, UpdateOwnerDto owner);
         Task Delete(Guid id);
     }
 }
