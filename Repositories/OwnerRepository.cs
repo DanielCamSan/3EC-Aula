@@ -3,17 +3,34 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FirstExam.Data;
+using FirstExam.Repositories;
+using FirstExam.Services;
 using FirstExam.Models;
 
 namespace FirstExam.Repositories
 {
     public class OwnerRepository : IOwnerRepository
     {
-        private readonly AppDbContext _context;
-
+        private AppDbContext _context;
         public OwnerRepository(AppDbContext context)
         {
             _context = context;
+        }
+
+        public async Task Add(Owner owner)
+        {
+            await _context.Owners.AddAsync(owner);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Delete(Guid id)
+        {
+            var owner = await _context.Owners.FirstOrDefaultAsync(x => x.Id == id);
+            if (owner != null)
+            {
+                _context.Owners.Remove(owner);
+            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Owner>> GetAll()
@@ -23,23 +40,18 @@ namespace FirstExam.Repositories
 
         public async Task<Owner?> GetById(Guid id)
         {
-            return await _context.Owners.FirstOrDefaultAsync(g => g.Id == id);
+            return await _context.Owners.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task Add(Owner owner)
+        public async Task Update(Owner owner)
         {
-            _context.Owners.Add(owner);
+            _context.Owners.Update(owner);
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(Guid id)
+        public Task Update(Guid id, Owner owner)
         {
-            var owner = await _context.Owners.FindAsync(id);
-            if (owner != null)
-            {
-                _context.Owners.Remove(owner);
-                await _context.SaveChangesAsync();
-            }
+            throw new NotImplementedException();
         }
     }
 }

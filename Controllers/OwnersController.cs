@@ -1,4 +1,5 @@
-﻿using FirstExam.Models.dtos;
+﻿using FirstExam.Models;
+using FirstExam.Models.dtos;
 using FirstExam.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.JSInterop.Infrastructure;
@@ -59,7 +60,8 @@ namespace FirstExam.Controllers
 
         }
         [HttpPost]
-        public ActionResult<Owner> Create([FromBody] CreateOwnerDto dto)
+
+        public ActionResult<Owner> Create([FromBody] Models.CreateOwnerDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
             var owner = new Owner()
@@ -75,7 +77,7 @@ namespace FirstExam.Controllers
             return CreatedAtAction(nameof(GetOne), new {id=owner.Id},owner);
         }
         [HttpPut("{id:guid}")]
-        public ActionResult<Owner> Update(Guid id, [FromBody] UpdateOwnerDto dto)
+        public ActionResult<Owner> Update(Guid id, [FromBody] Models.UpdateOwnerDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
             var index = owners.FindIndex(a => a.Id == id);

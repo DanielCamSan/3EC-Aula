@@ -13,9 +13,9 @@ namespace FirstExam.Services
         {
             _repo = repo;
         }
-        public async Task<Owner> Create(CreateOwnerDto dto)
+        public async Task<Owner> Create(Models.CreateOwnerDto dto)
         {
-            var owner = new owner
+            var owner = new Owner
             {
                 FullName = dto.FullName,
                 Email = dto.Email,
@@ -41,16 +41,16 @@ namespace FirstExam.Services
 
         public async Task<Owner?> GetById(Guid id)
         {
-            var pet = _repo.GetById(id);
+            var owner = _repo.GetById(id);
             return await owner;
         }
 
-        public async Task<Owner> Update(Guid id, UpdateOwnerDto dto)
+        public async Task<Owner> Update(Guid id, Models.UpdateOwnerDto dto)
         {
-            var pet = new Pet
+            var owner = new Owner
             {
                 Id = id,
-                FullName = dto.FullName
+                FullName = dto.FullName,
                 Email = dto.Email,
                 Active = dto.Active,
                 Phone = dto.Phone,
