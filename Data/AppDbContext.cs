@@ -28,6 +28,9 @@ namespace FirstExam.Data
 
                 o.Property(x => x.Phone)
                     .HasMaxLength(20);
+                o.Property(x => x.Active)
+                    .IsRequired()
+                    .HasDefaultValue(true);
             });
         }
     }
