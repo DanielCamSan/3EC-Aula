@@ -2,5 +2,11 @@
 {
     public interface IPetRepository
     {
+        Task<IEnumerable<Pet>> GetAll();
+        Task<Pet?> GetById(Guid id);
+        Task Add(Pet pet);
+        Task Delete(Guid id);
+
+        Task Update(Pet pet);
     }
 }

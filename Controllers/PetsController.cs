@@ -80,7 +80,7 @@ namespace FirstExam.Controllers
 
         }
         [HttpDelete("{id:guid}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var success = await _service.Delete(id);
             return success ? NoContent() : NotFound(new { error = "Book not found", status = 404 });

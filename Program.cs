@@ -1,5 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<FirstExam.Repositories.IPetRepository, FirstExam.Repositories.PetRepository>();
+builder.Services.AddScoped<FirstExam.Services.IPetService, FirstExam.Services.PetService>();
 builder.Services.AddCors(
     options =>
     {

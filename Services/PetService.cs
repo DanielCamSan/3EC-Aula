@@ -48,18 +48,15 @@ namespace FirstExam.Services
 
         public async Task<Pet> Update(Guid id, UpdatePetDto dto)
         {
-            var pet = new Pet
-            {
-                Id= id,
-                Name = dto.Name,
-                BirthDate = dto.BirthDate,
-                Breed = dto.Breed,
-                OwnerId = dto.OwnerId,
-                sex = dto.sex,
-                Species = dto.Species,
-                WeightKg = dto.WeightKg
-            };
-            await _repo.Update(id,pet);
+            var pet = await _repo.GetById(id);
+            pet.Name = dto.Name;
+            pet.BirthDate = dto.BirthDate;
+            pet.Breed = dto.Breed;
+            pet.OwnerId = dto.OwnerId;
+            pet.sex = dto.sex;
+            pet.Species = dto.Species;
+            pet.WeightKg = dto.WeightKg;
+            await _repo.Update(pet);
             return pet;
         }
     }
