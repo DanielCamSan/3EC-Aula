@@ -8,10 +8,6 @@ builder.Services.AddCors(
             policy.WithOrigins("https://localhost:7162", "http://127.0.0.1:5500").AllowAnyMethod().AllowAnyHeader();
         });
     });
-
-
-builder.Services.AddControllers();
-
 var app = builder.Build();
 
 app.UseHttpsRedirection();
