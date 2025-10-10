@@ -1,3 +1,5 @@
+using FirstExam.Repositories;
+using FirstExam.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(
@@ -8,7 +10,8 @@ builder.Services.AddCors(
             policy.WithOrigins("https://localhost:7162", "http://127.0.0.1:5500").AllowAnyMethod().AllowAnyHeader();
         });
     });
-
+builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+builder.Services.AddScoped<IOwnerService, OwnerService>();
 
 builder.Services.AddControllers();
 
