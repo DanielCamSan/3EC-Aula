@@ -80,7 +80,7 @@ namespace FirstExam.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             var removed = await _service.Delete(id);
-            return removed ?
+            return !removed ?
                 NotFound(new { error = "Pet not found", status = 404 }) :
             NoContent();
         }
