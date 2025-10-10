@@ -54,3 +54,4 @@ public record UpdatePetDto
     [Range(0, 500)]
     public decimal? WeightKg { get; set; }
 }
+
