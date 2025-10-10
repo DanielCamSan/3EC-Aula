@@ -22,9 +22,12 @@ namespace FirstExam.Services
             return pet;
         }
 
-        public Task<bool> Delete(Guid id)
+        public async Task<bool> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            var existing = await _repo.GetById(id);
+            if (existing == null) return false;
+            await _repo.Delete(id);
+            return true;
         }
 
         public Task<IEnumerable<Pet>> GetAll()
