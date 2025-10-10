@@ -1,4 +1,6 @@
 ﻿
+using FirstExam.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace FirstExam.Repositories
@@ -12,28 +14,28 @@ namespace FirstExam.Repositories
         }
         public async Task Add(Appointment appointment)
         {
-            await _context.Appointment.AddAsync(appointment);
+            await _context.Appointments.AddAsync(appointment);
             await _context.SaveChangesAsync();
         }
 
         public async Task Delete(Guid id)
         {
-            var appointment = await _context.Appointment.FirstOrDefaultAsync(x => x.Id == id);
+            var appointment = await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
             if (appointment != null)
             {
-                _context.Appointment.Remove(appointment);
+                _context.Appointments.Remove(appointment);
                 await _context.SaveChangesAsync();
             }
         }
 
         public async Task<IEnumerable<Appointment>> GetAll()
         {
-            return await _context.Appointment.ToListAsync();
+            return await _context.Appointments.ToListAsync();
         }
 
         public async Task<Appointment?> GetById(Guid id)
         {
-            return await _context.Appointment.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }
