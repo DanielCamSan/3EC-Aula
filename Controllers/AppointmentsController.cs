@@ -1,7 +1,7 @@
 ﻿using FirstExam.Models;
+using FirstExam.Models.dtos;
 using FirstExam.Services;
 using Microsoft.AspNetCore.Mvc;
-using static Appointment;
 
 namespace FirstExam.Controllers
 {
@@ -16,6 +16,7 @@ namespace FirstExam.Controllers
             _service = service;
         }
 
+        // Helper para normalizar los parámetros de paginación
         private static (int page, int limit) NormalizePage(int? page, int? limit)
         {
             var p = page.GetValueOrDefault(1); if (p < 1) p = 1;
