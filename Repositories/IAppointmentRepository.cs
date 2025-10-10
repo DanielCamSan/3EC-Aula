@@ -1,7 +1,7 @@
 ﻿using FirstExam.Models;
 namespace FirstExam.Repositories
 {
-    public interface IAppointmentRepositoy
+    public interface IAppointmentRepository
     {
 
         Task<IEnumerable<Appointment>> GetAll();
