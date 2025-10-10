@@ -1,7 +1,14 @@
+using FirstExam.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<FirstExam.Repositories.IPetRepository, FirstExam.Repositories.PetRepository>();
 builder.Services.AddScoped<FirstExam.Services.IPetService, FirstExam.Services.PetService>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConection"));
+});
 builder.Services.AddCors(
     options =>
     {
