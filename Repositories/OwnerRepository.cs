@@ -9,6 +9,10 @@ namespace FirstExam.Repositories
     public class OwnerRepository : IOwnerRepository
     {
         private readonly AppDbContext _context;
+        public OwnerRepository(AppDbContext context)
+        {
+            _context = context;
+        }
         public async Task Add(Owner owner)
         {
             await _context.Owners.AddAsync(owner);
@@ -20,14 +24,12 @@ namespace FirstExam.Repositories
 
             if (owner == null) return null;
 
-            owner = new Owner
-            {
-                Id = Guid.NewGuid(),
-                Email = dto.Email.Trim(),
-                FullName = dto.FullName.Trim(),
-                Phone = dto.Phone,
-                Active = dto.Active,
-            };
+            owner.Email = dto.Email.Trim();
+            owner.FullName = dto.FullName.Trim();
+            owner.Phone = dto.Phone;
+            owner.Active = dto.Active;
+            
+
 
             _context.Owners.Update(owner);
             await _context.SaveChangesAsync();

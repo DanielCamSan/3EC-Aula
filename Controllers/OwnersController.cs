@@ -74,8 +74,8 @@ namespace FirstExam.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             var removed = await _service.Delete(id);
-            return removed ?
-                NotFound(new  { error = "Pet not found", status = 404 }) :
+            return !removed ?
+                NotFound(new  { error = "Owner not found", status = 404 }) :
                 NoContent();
         }
 

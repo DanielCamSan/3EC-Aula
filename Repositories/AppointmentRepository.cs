@@ -44,14 +44,11 @@ namespace FirstExam.Repositories
 
             if (appointment == null) return null;
 
-            appointment = new Appointment
-            {
-                PetId = dto.PetId,
-                ScheduledAt = dto.ScheduledAt,
-                Reason = dto.Reason,
-                Status = dto.Status,
-                Notes = dto.Notes != null ?dto.Notes: "",
-            };
+            appointment.PetId = dto.PetId;
+            appointment.ScheduledAt = dto.ScheduledAt;
+            appointment.Reason = dto.Reason;
+            appointment.Status = dto.Status;
+            appointment.Notes = dto.Notes != null ? dto.Notes : "";
 
             _context.Appointments.Update(appointment);
             await _context.SaveChangesAsync();

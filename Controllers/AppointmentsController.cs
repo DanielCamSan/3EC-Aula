@@ -14,7 +14,7 @@ namespace FirstExam.Controllers
     public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentService _service;
-        public AppointmentsController (AppointmentService service)
+        public AppointmentsController (IAppointmentService service)
         {
             _service = service;
         }
