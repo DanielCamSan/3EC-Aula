@@ -5,10 +5,10 @@ namespace FirstExam.Services
 {
     public interface IPetService
     {
-        IEnumerable<Pet> GetAll();
-        Pet? GetById(Guid id);
-        Pet Create(CreatePetDto dto);
-        Pet? Update(Guid id, UpdatePetDto dto);
-        bool Delete(Guid id);
+        Task<IEnumerable<Pet>> GetAllAsync();
+        Task<Pet?> GetByIdAsync(Guid id);
+        Task<Pet> CreateAsync(CreatePetDto dto);
+        Task<Pet?> UpdateAsync(Guid id, UpdatePetDto dto);
+        Task<bool> DeleteAsync(Guid id);
     }
 }

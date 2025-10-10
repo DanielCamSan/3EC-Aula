@@ -13,11 +13,17 @@ namespace FirstExam.Services
             this.repository = repository;
         }
 
-        public IEnumerable<Pet> GetAll() => repository.GetAll();
+        public async Task<IEnumerable<Pet>> GetAllAsync()
+        {
+            return await repository.GetAllAsync();
+        }
 
-        public Pet? GetById(Guid id) => repository.GetById(id);
+        public async Task<Pet?> GetByIdAsync(Guid id)
+        {
+            return await repository.GetByIdAsync(id);
+        }
 
-        public Pet Create(CreatePetDto dto)
+        public async Task<Pet> CreateAsync(CreatePetDto dto)
         {
             var pet = new Pet
             {
@@ -30,13 +36,14 @@ namespace FirstExam.Services
                 sex = dto.sex.Trim(),
                 WeightKg = dto.WeightKg
             };
-            repository.Add(pet);
+
+            await repository.AddAsync(pet);
             return pet;
         }
 
-        public Pet? Update(Guid id, UpdatePetDto dto)
+        public async Task<Pet?> UpdateAsync(Guid id, UpdatePetDto dto)
         {
-            var existing = repository.GetById(id);
+            var existing = await repository.GetByIdAsync(id);
             if (existing == null) return null;
 
             existing.OwnerId = dto.OwnerId;
@@ -47,10 +54,13 @@ namespace FirstExam.Services
             existing.sex = dto.sex.Trim();
             existing.WeightKg = dto.WeightKg;
 
-            repository.Update(existing);
+            await repository.UpdateAsync(existing);
             return existing;
         }
 
-        public bool Delete(Guid id) => repository.Delete(id);
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            return await repository.DeleteAsync(id);
+        }
     }
 }

@@ -4,10 +4,10 @@ namespace FirstExam.Repositories
 {
     public interface IPetRepository
     {
-        IEnumerable<Pet> GetAll();
-        Pet? GetById(Guid id);
-        void Add(Pet pet);
-        void Update(Pet pet);
-        bool Delete(Guid id);
+        Task<IEnumerable<Pet>> GetAllAsync();
+        Task<Pet?> GetByIdAsync(Guid id);
+        Task AddAsync(Pet pet);
+        Task UpdateAsync(Pet pet);
+        Task<bool> DeleteAsync(Guid id);
     }
 }

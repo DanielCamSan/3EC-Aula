@@ -1,28 +1,48 @@
-﻿using FirstExam.Models;
-using FirstExam.Services;
+﻿using FirstExam.Data;
+using FirstExam.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstExam.Repositories
 {
     public class PetRepository : IPetRepository
     {
-        private readonly List<Pet> pets = new();
+        private readonly AppDbContext context;
 
-        public IEnumerable<Pet> GetAll() => pets;
-
-        public Pet? GetById(Guid id) => pets.FirstOrDefault(p => p.Id == id);
-
-        public void Add(Pet pet) => pets.Add(pet);
-
-        public void Update(Pet pet)
+        public PetRepository(AppDbContext context)
         {
-            var index = pets.FindIndex(p => p.Id == pet.Id);
-            if (index != -1) pets[index] = pet;
+            this.context = context;
         }
 
-        public bool Delete(Guid id)
+        public async Task<IEnumerable<Pet>> GetAllAsync()
         {
-            var removed = pets.RemoveAll(p => p.Id == id);
-            return removed > 0;
+            return await context.Pets.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<Pet?> GetByIdAsync(Guid id)
+        {
+            return await context.Pets.FindAsync(id);
+        }
+
+        public async Task AddAsync(Pet pet)
+        {
+            await context.Pets.AddAsync(pet);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(Pet pet)
+        {
+            context.Pets.Update(pet);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            var pet = await context.Pets.FindAsync(id);
+            if (pet == null) return false;
+
+            context.Pets.Remove(pet);
+            await context.SaveChangesAsync();
+            return true;
         }
     }
 }
