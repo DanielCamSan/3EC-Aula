@@ -1,20 +1,22 @@
 ﻿using FirstExam.Models;
+using FirstExam.Models.dtos;
+using FirstExam.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+
 namespace FirstExam.Controllers
 {
     [ApiController]
     [Route("api/v1/[Controller]")]
     public class OwnersController : Controller
     {
-        public static readonly List<Owner> owners = new()
+        private readonly IOwnerService _service;
+        public OwnersController(IOwnerService service)
         {
-            new Owner { Id = Guid.NewGuid(), Email= "ana@gmail.com",FullName="Ana Pérez" ,Phone="+59177407697", Active= true },
-            new Owner { Id = Guid.NewGuid(), Email= "diego@gmail.com",FullName="Diego Castro" ,Phone="+59177777777", Active= true },
-            new Owner { Id = Guid.NewGuid(), Email= "juan@gmail.com",FullName="Juan Pérez" ,Phone="+59177777", Active= true },
-
-        };
+            _service = service;
+        }
         private static (int page, int limit) NormalizePage (int? page,int? limit)
         {
             var p = page.GetValueOrDefault(1); if (p<1) p=1;
@@ -36,7 +38,7 @@ namespace FirstExam.Controllers
         {
 
             var(p,l)= NormalizePage(Page,limit);
-            IEnumerable<Owner> query = owners;
+            IEnumerable<Owner> query = await _service.GetAll();
             if (!string.IsNullOrEmpty(Q))
             {
                 query = query.Where(a=>a.Email.Contains(Q, StringComparison.OrdinalIgnoreCase) || a.FullName.Contains(Q, StringComparison.OrdinalIgnoreCase));
@@ -49,7 +51,7 @@ namespace FirstExam.Controllers
         [HttpGet("{id:guid}")]
         public ActionResult<Owner> GetOne(Guid id)
         {
-            var owner = owners.FirstOrDefault(a => a.Id == id);
+            var owner = await _service.GetById(id);
             return owner is null ? NotFound(new { error = "owner not found ", status = 404 }): Ok(owner);  
 
         }
@@ -57,41 +59,24 @@ namespace FirstExam.Controllers
         public ActionResult<Owner> Create([FromBody] CreateOwnerDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
-            var owner = new Owner()
-            {
-                Id = Guid.NewGuid(),
-                Email = dto.Email.Trim(),
-                FullName = dto.FullName.Trim(),
-                Phone = dto.Phone.Trim(),
-                Active = dto.Active,
-            };
-
-            owners.Add(owner);
+            var pet = await _service.Create(dto);
             return CreatedAtAction(nameof(GetOne), new {id=owner.Id},owner);
         }
         [HttpPut("{id:guid}")]
         public ActionResult<Owner> Update(Guid id, [FromBody] UpdateOwnerDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
-            var index = owners.FindIndex(a => a.Id == id);
-            if (index == -1)
-                return NotFound(new { error = "Owner not found", status = 404 });
-            var updated = new Owner
-            {
-                Id = id,
-                Email = dto.Email.Trim(),
-                FullName = dto.FullName.Trim(),
-                Phone = dto.Phone.Trim(),
-                Active = dto.Active
-            };
-            owners[index]=updated;
+            var updated = await _service.Update(id, dto);
+           
             return Ok(updated);
         }
         [HttpDelete("{id:guid}")]
         public IActionResult Delete(Guid id)
         {
-            var removed = owners.RemoveAll(a => a.Id == id);
-            return removed == 0 ? NotFound(new { error = "Owner not found", status = 404 }) : NoContent();
+            var removed = await _service.Delete(id);
+            return removed ?
+                NotFound(new  { error = "Pet not found", status = 404 }) :
+                NoContent();
         }
 
     }
