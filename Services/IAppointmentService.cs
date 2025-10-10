@@ -1,5 +1,5 @@
 ﻿using FirstExam.Models;
-using static Appointment;
+using FirstExam.Models.dtos;
 
 namespace FirstExam.Services
 {

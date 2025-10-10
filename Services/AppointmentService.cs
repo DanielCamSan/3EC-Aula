@@ -1,8 +1,8 @@
 ﻿using FirstExam.Models;
+using FirstExam.Models.dtos;
 using FirstExam.Repositories;
 using System.Reflection;
-using static Appointment;
-using FirstExam.Models.dtos;
+
 
 namespace FirstExam.Services
 {
