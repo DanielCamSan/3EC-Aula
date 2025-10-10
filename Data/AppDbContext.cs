@@ -27,7 +27,7 @@ namespace FirstExam.Data
     public AppDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5436;Database=ownersdb;Username=ownersuser;Password=supersecret");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=ownersdb;Username=ownersuser;Password=supersecret");
 
         return new AppDbContext(optionsBuilder.Options);
     }
