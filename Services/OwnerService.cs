@@ -21,5 +21,12 @@ namespace FirstExam.Services
             await _repo.Add(owner);
             return owner;
         }
+        public async Task<bool> Delete(Guid id)
+        {
+            var existing = await _repo.GetById(id);
+            if (existing == null) return false;
+            await _repo.Delete(id);
+            return true;
+        }
     }
 }
