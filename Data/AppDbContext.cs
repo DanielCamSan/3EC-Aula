@@ -13,6 +13,7 @@ namespace FirstExam.Data
         }
 
         public DbSet<Appointment> Appointments => Set<Appointment>(); 
+        public DbSet<Owner> Owners => Set<Owner>();
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,6 +26,15 @@ namespace FirstExam.Data
                 a.Property(x => x.Reason).IsRequired().HasMaxLength(100);
                 a.Property(x => x.Status).IsRequired().HasMaxLength(100);
                 a.Property(x => x.Notes);
+            });
+            
+            modelBuilder.Entity<Owner>(o =>
+            {
+                o.HasKey(x => x.Id);
+                o.Property(x => x.Email).IsRequired();
+                o.Property(x => x.FullName).IsRequired().HasMaxLength(200);
+                o.Property(x => x.Phone).IsRequired().HasMaxLength(7);
+                o.Property(x => x.Active);
             });
         }
 
