@@ -1,8 +1,7 @@
 ﻿using FirstExam.Models;
 using FirstExam.Models.dtos;
-using Microsoft.Extensions.Logging;
 
-namespace FirstExam.Repository
+namespace FirstExam.Repositories
 {
     public interface IOwnerRepository
     {
@@ -13,4 +12,3 @@ namespace FirstExam.Repository
         Task Delete(Guid id);
     }
 }
-

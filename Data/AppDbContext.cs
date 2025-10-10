@@ -1,4 +1,5 @@
-﻿using FirstExam.Models;
+﻿using FirstExam.Data;
+using FirstExam.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Reflection.Emit;
@@ -28,11 +29,9 @@ namespace FirstExam.Data
 
                 o.Property(x => x.Phone)
                     .HasMaxLength(20);
-
                 o.Property(x => x.Active)
                     .IsRequired()
                     .HasDefaultValue(true);
-
             });
         }
     }

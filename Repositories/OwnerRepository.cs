@@ -1,7 +1,6 @@
-﻿using FirstExam.Data; 
+﻿using FirstExam.Data;
 using FirstExam.Models;
-using FirstExam.Repository;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace FirstExam.Repositories
