@@ -14,26 +14,6 @@ namespace FirstExam.Models
         public string Phone { get; set; } = string.Empty;
         public bool Active { get; set; } = true;
     }
-    public record CreateOwnerDto
-    {
-         public Guid Id { get; init; }
-        [Required, StringLength(200)]
-        public string Email { get; init; }
-        [Required, StringLength(200)]
-        public string FullName { get; init; }
-        [Required, StringLength(maximumLength:20,MinimumLength =7)]
-        public string Phone { get; init; }
-        public bool Active { get; init; }
-    }
-    public record UpdateOwnerDto
-    {
-        [Required, StringLength(200)]
-        public string Email { get; set; }
-        [Required, StringLength(200)]
-        public string FullName { get; set; }
-        [Required, StringLength(7, MinimumLength = 7)]
-        public string Phone { get; init; }
-        public bool Active { get; set; }
-    }
+   
 };
 
