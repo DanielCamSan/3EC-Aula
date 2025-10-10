@@ -28,5 +28,15 @@ namespace FirstExam.Services
             await _repo.Delete(id);
             return true;
         }
+        public async Task<IEnumerable<Owner>> GetAll()
+        {
+            return await _repo.GetAll();
+        }
+
+        public async Task<Owner?> GetById(Guid id)
+        {
+            var owner = await _repo.GetById(id);
+            return owner;
+        }
     }
 }
