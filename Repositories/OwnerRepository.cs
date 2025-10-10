@@ -1,6 +1,8 @@
 ﻿using FirstExam.Models;
 using FirstExam.Models.dtos;
 using System;
+using FirstExam.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstExam.Repositories
 {

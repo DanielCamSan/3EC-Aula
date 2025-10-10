@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using FirstExam.Models;
 
 namespace FirstExam.Data
 {
@@ -8,6 +9,8 @@ namespace FirstExam.Data
         {
         }
         public DbSet<Pet> Pets => Set<Pet>();   
+        public DbSet<Owner> Owners => Set<Owner>();   
+        public DbSet<Appointment> Appointments => Set<Appointment>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

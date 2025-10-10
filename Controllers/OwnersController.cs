@@ -34,7 +34,7 @@ namespace FirstExam.Controllers
         }
 
         [HttpGet]
-        public  IActionResult GetAll([FromQuery] int Page, [FromQuery] int limit, [FromQuery] string sort, [FromQuery] string? order, [FromQuery] string? Q )
+        public async Task<IActionResult> GetAll([FromQuery] int Page, [FromQuery] int limit, [FromQuery] string sort, [FromQuery] string? order, [FromQuery] string? Q )
         {
 
             var(p,l)= NormalizePage(Page,limit);
@@ -49,21 +49,21 @@ namespace FirstExam.Controllers
             return Ok(new { data, meta = new { Page = p, limit = l, total } });
         }
         [HttpGet("{id:guid}")]
-        public ActionResult<Owner> GetOne(Guid id)
+        public async Task<ActionResult<Owner>> GetOne(Guid id)
         {
             var owner = await _service.GetById(id);
             return owner is null ? NotFound(new { error = "owner not found ", status = 404 }): Ok(owner);  
 
         }
         [HttpPost]
-        public ActionResult<Owner> Create([FromBody] CreateOwnerDto dto)
+        public async Task<ActionResult<Owner>> Create([FromBody] CreateOwnerDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
-            var pet = await _service.Create(dto);
+            var owner = await _service.Create(dto);
             return CreatedAtAction(nameof(GetOne), new {id=owner.Id},owner);
         }
         [HttpPut("{id:guid}")]
-        public ActionResult<Owner> Update(Guid id, [FromBody] UpdateOwnerDto dto)
+        public async Task<ActionResult<Owner>> Update(Guid id, [FromBody] UpdateOwnerDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
             var updated = await _service.Update(id, dto);
@@ -71,7 +71,7 @@ namespace FirstExam.Controllers
             return Ok(updated);
         }
         [HttpDelete("{id:guid}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var removed = await _service.Delete(id);
             return removed ?
