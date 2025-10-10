@@ -1,6 +1,13 @@
-﻿namespace FirstExam.Repository
+﻿using FirstExam.Models;
+
+
+namespace FirstExam.Repository
 {
-    public class IOwnerRepository
+    public interface IOwnerRepository
     {
+        Task<IEnumerable<Owner>> GetAll();
+        Task<Owner?> GetById(Guid id);
+        Task Add(Owner owner);
+        Task Delete(Guid id);
     }
 }
