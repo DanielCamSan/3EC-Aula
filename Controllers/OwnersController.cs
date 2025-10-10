@@ -1,7 +1,12 @@
-﻿using FirstExam.Models;
+﻿using FirstExam.Models.dtos;
+using FirstExam.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.JSInterop.Infrastructure;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace FirstExam.Controllers
 {
     [ApiController]
