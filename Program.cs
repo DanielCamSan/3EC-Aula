@@ -3,8 +3,11 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Add services to the container.
 =======
+=======
+>>>>>>> c634eb6a0b00698e41addd33859a9fd9d5b0dc9b
 builder.Services.AddCors(
     options =>
     {
@@ -14,7 +17,13 @@ builder.Services.AddCors(
         });
     });
 
+<<<<<<< HEAD
 >>>>>>> 2adf0a928d82def5e5aa21791a2224cd88eee797
+=======
+=======
+// Add services to the container.
+>>>>>>> 99e531e4d6daf8c647512293ca4090505b2f442b
+>>>>>>> c634eb6a0b00698e41addd33859a9fd9d5b0dc9b
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 //builder.Services.AddOpenApi();

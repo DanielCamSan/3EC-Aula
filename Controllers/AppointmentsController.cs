@@ -46,6 +46,22 @@ namespace FirstExam.Controllers
             var success = await _service.Delete(id);
             return success ? NoContent() : NotFound(new { error = "Appointment not found", status = 404 });
         }
+
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateAppointmentDto dto)
+        {
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+            try
+            {
+                var updated = await _service.Update(id, dto);
+                return Ok(updated);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { error = ex.Message, status = 404 });
+            }
+        }
+
     }
 }
   
