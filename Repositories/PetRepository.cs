@@ -1,15 +1,11 @@
 ﻿using FirstExam.Models;
+using FirstExam.Services;
 
 namespace FirstExam.Repositories
 {
     public class PetRepository : IPetRepository
     {
-        private readonly List<Pet> pets = new()
-        {
-            new Pet { Name="Perla", Species="cat", Breed="egipcio", sex="macho", WeightKg=10, BirthDate=DateTime.Now.AddMonths(-24) },
-            new Pet { Name="Sadu", Species="dog", Breed="Shar-Pei", sex="macho", WeightKg=25, BirthDate=DateTime.Now.AddMonths(-60) },
-            new Pet { Name="Fadu", Species="dog", Breed="american bully", sex="macho", WeightKg=30, BirthDate=DateTime.Now.AddMonths(-36) }
-        };
+        private readonly List<Pet> pets = new();
 
         public IEnumerable<Pet> GetAll() => pets;
 
