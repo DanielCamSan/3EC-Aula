@@ -4,15 +4,7 @@ using FirstExam.Repositories;
 
 namespace FirstExam.Services
 {
-    public class OwnerService
-    {
-    }
-}
-
-
-namespace apiwithdb.Services
-{
-    public class AuthorService : IAuthorService
+    public class OwnerService : IOwnerService
     {
         private readonly IAuthorRepository _repo;
         public AuthorService(IAuthorRepository repo) { _repo = repo; }
