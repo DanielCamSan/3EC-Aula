@@ -48,5 +48,21 @@ namespace FirstExam.Services
             var appointment = await _repository.GetById(id);
             return appointment;
         }
+        public async Task<bool> Update(Guid id, UpdateAppointmentDto dto)
+        {
+            var appointment = await _repository.GetById(id);
+            if(appointment == null)
+            {
+                return false;
+            }
+            appointment.Reason = dto.Reason;
+            appointment.Status  = dto.Status;
+            appointment.Notes = dto.Notes;  
+            appointment.ScheduledAt = dto.ScheduledAt;
+            appointment.PetId = dto.PetId;
+            await _repository.Update(appointment);
+            return true;
+
+        }
     }
 }
