@@ -13,3 +13,4 @@ namespace FirstExam.Models.DTOs
         public string? Notes { get; set; }
 
     }
+}

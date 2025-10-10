@@ -10,8 +10,8 @@ public class Appointment
     [Required, StringLength(100)]
     public string Status { get; set; } = "scheduled";
     public string? Notes { get; set; }
+   
 
-  
 
-    }
 }
+

@@ -1,5 +1,6 @@
 ﻿using FirstExam.Models;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
 
 namespace FirstExam.Data
