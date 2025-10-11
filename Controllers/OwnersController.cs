@@ -31,22 +31,41 @@ namespace FirstExam.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateOwnerDto dto)
         {
-            var owner = await _service.Create(dto);
-            return CreatedAtAction(nameof(GetById), new { id = owner.Id }, owner);
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+            try
+            {
+                var owner = await _service.Create(dto);
+                return CreatedAtAction(nameof(GetById), new { id = owner.Id }, owner);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message, status=409 });
+            }
         }
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateOwnerDto dto)
         {
-            var owner = await _service.Update(id, dto);
-            if (owner == null) return NotFound();
-            return Ok(owner);
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+            try
+            {
+                var updated = await _service.Update(id, dto);
+                return updated is null
+                    ? NotFound(new { error = "Owner not found", status = 404 })
+                    : Ok(updated);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { error = ex.Message, status = 409 });
+            }
         }
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var deleted = await _service.Delete(id);
-            if (!deleted) return NotFound();
-            return NoContent();
+            var success = await _service.Delete(id);
+            return success
+                ? NoContent()
+                : NotFound(new { error = "Owner not found or has related appointments", status = 404 });
+            
         }
 
     }
