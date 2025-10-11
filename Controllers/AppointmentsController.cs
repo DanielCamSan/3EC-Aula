@@ -40,6 +40,15 @@ namespace FirstExam.Controllers
             var appointment = await _service.Create(dto);
             return CreatedAtAction(nameof(GetOne), new { id = appointment.Id }, appointment);
         }
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateAppointmentDto dto)
+        {
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+            var updated = await _service.Update(id, dto);
+            return updated is null
+                ? NotFound(new { error = "Appointment not found", status = 404 })
+                : Ok(updated);
+        }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)

@@ -56,26 +56,23 @@ namespace FirstExam.Services
             var owner = await _repo.GetById(id);
             return owner;
         }
-        public async Task<bool> Update(Guid id, CreateAppointmentDto dto)
+        public async Task<Appointment?> Update(Guid id, UpdateAppointmentDto dto)
         {
             var existing = await _repo.GetById(id);
-            if (existing == null) return false;
-
+            if (existing == null) return null;
             var ownerExists = await _ownerRepo.GetById(dto.OwnerId);
             if (ownerExists == null)
             {
                 throw new InvalidOperationException("Owner does not exist.");
             }
-
             existing.Reason = dto.Reason;
             existing.ScheduledAt = dto.ScheduledAt;
             existing.Status = dto.Status;
             existing.Notes = dto.Notes;
             existing.PetId = dto.PetId;
             existing.OwnerId = dto.OwnerId;
-
             await _repo.Update(existing);
-            return true;
+            return existing;
         }
     }
 }
