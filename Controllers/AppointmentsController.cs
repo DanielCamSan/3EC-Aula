@@ -59,6 +59,6 @@ namespace FirstExam.Controllers
                 : NotFound(new { error = "Appointment not found", status = 404 });
         }
     
-}   
+    }   
 }
   
