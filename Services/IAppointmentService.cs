@@ -1,6 +1,13 @@
-﻿namespace FirstExam.Servicies
+﻿using FirstExam.Models.Dtos.Appointments;
+
+namespace FirstExam.Services
 {
-    public class IAppointmentService
+    public interface IAppointmentService
     {
+        Task<IEnumerable<AppointmentListDto>> GetAll();
+        Task<AppointmentDetailDto?> GetById(Guid id);
+        Task<AppointmentDetailDto> Create(CreateAppointmentDto dto);
+        Task<AppointmentDetailDto?> Update(Guid id, UpdateAppointmentDto dto);
+        Task<bool> Delete(Guid id);
     }
 }
