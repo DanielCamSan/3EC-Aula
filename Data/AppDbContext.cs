@@ -38,10 +38,7 @@ namespace FirstExam.Data
                 o.Property(x => x.Phone).IsRequired().HasMaxLength(7);
                 o.Property(x => x.Active);
 
-                o.ToTable(t =>
-                {
-                    t.HasCheckConstraint("CK_Owner_PhoneLength", "LEN([Phone]) >= 7");
-                });
+                
             });
 
             modelBuilder.Entity<Pet>(p =>
@@ -54,11 +51,6 @@ namespace FirstExam.Data
                 p.Property(x => x.BirthDate).IsRequired();
                 p.Property(x => x.sex).IsRequired().HasMaxLength(20);
                 p.Property(x => x.WeightKg);
-
-                p.ToTable(t =>
-                {
-                    t.HasCheckConstraint("CK_Pet_WeightKg", "[WeightKg] >= 0 AND [WeightKg] <= 500");
-                });
             });
 
         }
