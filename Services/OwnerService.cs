@@ -55,7 +55,7 @@ namespace FirstExam.Services
                 Active = dto.Active,
                 Phone = dto.Phone,
             };
-            await _repo.Update(id, owner);
+            await _repo.Update(owner);
             return owner;
         }
     }

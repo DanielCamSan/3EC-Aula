@@ -49,9 +49,5 @@ namespace FirstExam.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public Task Update(Guid id, Owner owner)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

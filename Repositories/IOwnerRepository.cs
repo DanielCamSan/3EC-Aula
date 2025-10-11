@@ -12,6 +12,6 @@ namespace FirstExam.Repositories
         Task Add(Owner owner);
         Task Delete(Guid id);
 
-        Task Update(Guid id, Owner owner);
+        Task Update(Owner owner);
     }
 }

@@ -1,5 +1,13 @@
-var builder = WebApplication.CreateBuilder(args);
+using FirstExam.Data;
+using Microsoft.EntityFrameworkCore;
 
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<FirstExam.Repositories.IOwnerRepository,FirstExam.Repositories.OwnerRepository>();
+builder.Services.AddScoped<FirstExam.Services.IOwnerService, FirstExam.Services.OwnerService>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConection"));
+});
 builder.Services.AddCors(
     options =>
     {
