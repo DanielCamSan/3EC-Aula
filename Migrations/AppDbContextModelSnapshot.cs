@@ -32,6 +32,9 @@ namespace FirstExam.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("OwnerId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("PetId")
                         .HasColumnType("uuid");
 
@@ -49,6 +52,8 @@ namespace FirstExam.Migrations
                         .HasColumnType("character varying(200)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
 
                     b.HasIndex("PetId");
 
@@ -81,6 +86,61 @@ namespace FirstExam.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Owners");
+                });
+
+            modelBuilder.Entity("Pet", b =>
+                {
+                    b.Property<Guid>("OwnerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Breed")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Species")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<decimal?>("WeightKg")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("sex")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("OwnerId");
+
+                    b.ToTable("Pets");
+                });
+
+            modelBuilder.Entity("Appointment", b =>
+                {
+                    b.HasOne("FirstExam.Models.Owner", "owner")
+                        .WithMany("Appointments")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("owner");
+                });
+
+            modelBuilder.Entity("FirstExam.Models.Owner", b =>
+                {
+                    b.Navigation("Appointments");
                 });
 #pragma warning restore 612, 618
         }
