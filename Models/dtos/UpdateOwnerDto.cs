@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace apiwithdb.Models.dtos
+namespace FirstExam.Models.dtos
 {
     public record UpdateOwnerDto
     {
