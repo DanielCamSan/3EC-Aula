@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using apiwithdb.Models.Dtos.Appointments;
-using apiwithdb.Services;
+using FirstExam.Models.Dtos.Appointments;
+using FirstExam.Services;
 
-namespace apiwithdb.Controllers
+namespace FirstExam.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
