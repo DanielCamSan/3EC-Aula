@@ -13,6 +13,7 @@ namespace FirstExam.Models
         [Required, StringLength(7, MinimumLength = 7)]
         public string Phone { get; set; } = string.Empty;
         public bool Active { get; set; } = true;
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 };
 
