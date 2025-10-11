@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using FirstExam.Models;
+﻿using FirstExam.Models;
 
 namespace FirstExam.Repositories
 {
     public interface IOwnerRepository
     {
-        Task<IEnumerable<Owner>> GetAll();
-        Task<Owner?> GetById(Guid id);
-        Task Add(Owner owner);
-        Task Delete(Guid id);
-
-        Task Update(Owner owner);
+        Task<IEnumerable<Owner>> GetAllAsync();
+        Task<Owner?> GetByIdAsync(Guid id);
+        Task<Owner> CreateAsync(Owner owner);
+        Task<Owner?> UpdateAsync(Guid id, Owner owner);
+        Task<bool> DeleteAsync(Guid id);
     }
 }

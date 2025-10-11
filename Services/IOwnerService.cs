@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using FirstExam.Models;
+﻿using FirstExam.Models;
 using FirstExam.Models.dtos;
+
 namespace FirstExam.Services
 {
     public interface IOwnerService
-
     {
-        Task<IEnumerable<Owner>> GetAll();
-        Task<Owner?> GetById(Guid id);
-        Task<Owner> Create(Models.CreateOwnerDto dto);
-        Task<Owner> Update(Guid id, Models.UpdateOwnerDto dto);
-        Task<bool> Delete(Guid id);
-        }
+        Task<IEnumerable<Owner>> GetAllAsync(string? q, string? sort, string? order);
+        Task<Owner?> GetByIdAsync(Guid id);
+        Task<Owner> CreateAsync(CreateOwnerDto dto);
+        Task<Owner?> UpdateAsync(Guid id, UpdateOwnerDto dto);
+        Task<bool> DeleteAsync(Guid id);
     }
+}

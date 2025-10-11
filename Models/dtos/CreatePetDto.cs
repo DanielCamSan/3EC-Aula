@@ -5,17 +5,23 @@ namespace FirstExam.Models.dtos
     public record CreatePetDto
     {
         [Required]
-        public required Guid OwnerId { get; init; }
+        public Guid OwnerId { get; init; }
+
         [Required, StringLength(100)]
-        public required string Name { get; init; }
+        public string Name { get; init; } = string.Empty;
+
         [Required, StringLength(100)]
-        public required string Species { get; init; }
-        [Required, StringLength(100)]
-        public required string Breed { get; init; }
+        public string Species { get; init; } = string.Empty;
+
+        [StringLength(100)]
+        public string Breed { get; init; } = string.Empty;
+
         [Required]
-        public required DateTime BirthDate { get; init; }
+        public DateTime BirthDate { get; init; }
+
         [Required, StringLength(20)]
-        public required string sex { get; init; }
+        public string sex { get; init; } = string.Empty;
+
         [Range(0, 500)]
         public decimal? WeightKg { get; init; }
     }

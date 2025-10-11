@@ -5,10 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConection"));
-});
+// --- Configuración de CORS ---
 builder.Services.AddCors(
     options =>
     {
@@ -18,27 +15,28 @@ builder.Services.AddCors(
         });
     });
 
+// --- Añadir DbContext ---
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// --- Registrar Servicios y Repositorios ---
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
-builder.Services.AddScoped<IPetRepository, PetRepository>();
-builder.Services.AddScoped<IPetService, PetService>();
-
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 builder.Services.AddScoped<IOwnerService, OwnerService>();
+
+builder.Services.AddScoped<IPetRepository, PetRepository>();
+builder.Services.AddScoped<IPetService, PetService>();
 
 
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
+// --- Pipeline de Middlewares ---
 app.UseHttpsRedirection();
-
 app.UseCors("MiPoliticaCors");
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

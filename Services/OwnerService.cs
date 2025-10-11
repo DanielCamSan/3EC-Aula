@@ -1,62 +1,74 @@
-﻿using FirstExam.Models.dtos;
+﻿using FirstExam.Models;
+using FirstExam.Models.dtos;
 using FirstExam.Repositories;
-using FirstExam.Services;
-using FirstExam.Models;
+using System.Reflection;
 
 namespace FirstExam.Services
 {
     public class OwnerService : IOwnerService
     {
-        private readonly IOwnerRepository _repo;
+        private readonly IOwnerRepository _repository;
 
-        public OwnerService(IOwnerRepository repo)
+        public OwnerService(IOwnerRepository repository)
         {
-            _repo = repo;
+            _repository = repository;
         }
-        public async Task<Owner> Create(Models.CreateOwnerDto dto)
+
+        private static IEnumerable<T> OrderByProp<T>(IEnumerable<T> src, string? sort, string? order)
+        {
+            if (string.IsNullOrEmpty(sort)) return src;
+            var prop = typeof(T).GetProperty(sort, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            if (prop == null) return src;
+
+            return string.Equals(order, "desc", StringComparison.OrdinalIgnoreCase)
+                ? src.OrderByDescending(x => prop.GetValue(x))
+                : src.OrderBy(x => prop.GetValue(x));
+        }
+
+        public async Task<IEnumerable<Owner>> GetAllAsync(string? q, string? sort, string? order)
+        {
+            var owners = await _repository.GetAllAsync();
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                owners = owners.Where(o => o.FullName.Contains(q, StringComparison.OrdinalIgnoreCase) || o.Email.Contains(q, StringComparison.OrdinalIgnoreCase));
+            }
+            return OrderByProp(owners, sort, order);
+        }
+
+        public async Task<Owner?> GetByIdAsync(Guid id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+
+        public async Task<Owner> CreateAsync(CreateOwnerDto dto)
         {
             var owner = new Owner
             {
-                FullName = dto.FullName,
-                Email = dto.Email,
-                Active = dto.Active,
-                Phone = dto.Phone
+                Id = Guid.NewGuid(),
+                FullName = dto.FullName.Trim(),
+                Email = dto.Email.Trim(),
+                Phone = dto.Phone.Trim(),
+                Active = dto.Active
             };
-            await _repo.Add(owner);
-            return owner;
+            return await _repository.CreateAsync(owner);
         }
 
-        public async Task<bool> Delete(Guid id)
+        public async Task<Owner?> UpdateAsync(Guid id, UpdateOwnerDto dto)
         {
-            var existing = _repo.GetById(id);
-            if (existing == null) return false;
-            await _repo.Delete(id);
-            return true;
+            var existing = await _repository.GetByIdAsync(id);
+            if (existing is null) return null;
+
+            existing.FullName = dto.FullName.Trim();
+            existing.Email = dto.Email.Trim();
+            existing.Phone = dto.Phone.Trim();
+            existing.Active = dto.Active;
+
+            return await _repository.UpdateAsync(id, existing);
         }
 
-        public async Task<IEnumerable<Owner>> GetAll()
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            return await _repo.GetAll();
-        }
-
-        public async Task<Owner?> GetById(Guid id)
-        {
-            var owner = _repo.GetById(id);
-            return await owner;
-        }
-
-        public async Task<Owner> Update(Guid id, Models.UpdateOwnerDto dto)
-        {
-            var owner = new Owner
-            {
-                Id = id,
-                FullName = dto.FullName,
-                Email = dto.Email,
-                Active = dto.Active,
-                Phone = dto.Phone,
-            };
-            await _repo.Update(owner);
-            return owner;
+            return await _repository.DeleteAsync(id);
         }
     }
 }

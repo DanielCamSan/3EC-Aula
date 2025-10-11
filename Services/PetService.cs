@@ -1,63 +1,80 @@
-﻿using FirstExam.Models.dtos;
+﻿using FirstExam.Models;
+using FirstExam.Models.dtos;
 using FirstExam.Repositories;
+using System.Reflection;
 
 namespace FirstExam.Services
 {
     public class PetService : IPetService
     {
-        private readonly IPetRepository _repo;
+        private readonly IPetRepository _repository;
 
-        public PetService(IPetRepository repo)
+        public PetService(IPetRepository repository)
         {
-            _repo = repo;
+            _repository = repository;
         }
-        public async Task<Pet> Create(CreatePetDto dto)
+
+        private static IEnumerable<T> OrderByProp<T>(IEnumerable<T> src, string? sort, string? order)
+        {
+            if (string.IsNullOrEmpty(sort)) return src;
+            var prop = typeof(T).GetProperty(sort, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            if (prop == null) return src;
+
+            return string.Equals(order, "desc", StringComparison.OrdinalIgnoreCase)
+                ? src.OrderByDescending(x => prop.GetValue(x))
+                : src.OrderBy(x => prop.GetValue(x));
+        }
+
+        public async Task<IEnumerable<Pet>> GetAllAsync(string? q, string? sort, string? order)
+        {
+            var pets = await _repository.GetAllAsync();
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                pets = pets.Where(p => p.Name.Contains(q, StringComparison.OrdinalIgnoreCase) || p.Species.Contains(q, StringComparison.OrdinalIgnoreCase) || p.Breed.Contains(q, StringComparison.OrdinalIgnoreCase));
+            }
+            return OrderByProp(pets, sort, order);
+        }
+
+        public async Task<Pet?> GetByIdAsync(Guid id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+
+        public async Task<Pet> CreateAsync(CreatePetDto dto)
         {
             var pet = new Pet
             {
-                Name = dto.Name,
-                BirthDate = dto.BirthDate,
-                Breed = dto.Breed,
+                Id = Guid.NewGuid(),
                 OwnerId = dto.OwnerId,
-                sex = dto.sex,
-                Species = dto.Species,
+                Name = dto.Name.Trim(),
+                Species = dto.Species.Trim(),
+                Breed = dto.Breed.Trim(),
+                BirthDate = dto.BirthDate,
+                sex = dto.sex.Trim(),
                 WeightKg = dto.WeightKg
             };
-            await _repo.Add(pet);
-            return pet;
+            return await _repository.CreateAsync(pet);
         }
 
-        public async Task<bool> Delete(Guid id)
+        public async Task<Pet?> UpdateAsync(Guid id, UpdatePetDto dto)
         {
-            var existing = _repo.GetById(id);
-            if (existing == null) return false;
-            await _repo.Delete(id);
-            return true;
+            var existing = await _repository.GetByIdAsync(id);
+            if (existing is null) return null;
+
+            existing.OwnerId = dto.OwnerId;
+            existing.Name = dto.Name.Trim();
+            existing.Species = dto.Species.Trim();
+            existing.Breed = dto.Breed.Trim();
+            existing.BirthDate = dto.BirthDate;
+            existing.sex = dto.sex.Trim();
+            existing.WeightKg = dto.WeightKg;
+
+            return await _repository.UpdateAsync(id, existing);
         }
 
-        public async Task<IEnumerable<Pet>> GetAll()
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            return await _repo.GetAll();
-        }
-
-        public async Task<Pet?> GetById(Guid id)
-        {
-            var pet = _repo.GetById(id);
-            return await pet;
-        }
-
-        public async Task<Pet> Update(Guid id, UpdatePetDto dto)
-        {
-            var pet = await _repo.GetById(id);
-            pet.Name = dto.Name;
-            pet.BirthDate = dto.BirthDate;
-            pet.Breed = dto.Breed;
-            pet.OwnerId = dto.OwnerId;
-            pet.sex = dto.sex;
-            pet.Species = dto.Species;
-            pet.WeightKg = dto.WeightKg;
-            await _repo.Update(pet);
-            return pet;
+            return await _repository.DeleteAsync(id);
         }
     }
 }
