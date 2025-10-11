@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 using FirstExam.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -11,7 +10,7 @@ namespace FirstExam.Data
 
         public DbSet<Owner> Owners => Set<Owner>();
         public DbSet<Appointment> Appointments => Set<Appointment>();
-
+        public DbSet<Pet> Pets => Set<Pet>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Owner>(o =>
@@ -32,36 +31,6 @@ namespace FirstExam.Data
                 a.Property(x => x.ScheduledAt).IsRequired();
                 a.Property(x => x.Reason).IsRequired();
             });
-        }
-    }
-    public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
-    {
-        public AppDbContext CreateDbContext(string[] args)
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=ownersdb;Username=ownersuser;Password=supersecret");
-
-            return new AppDbContext(optionsBuilder.Options);
-        }
-    }
-
-=======
-﻿using apiwithdb.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
-
-namespace apiwithdb.Data
-{
-    public class AppDbContext : DbContext
-    {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
-        }
-        public DbSet<Pet> Pets => Set<Pet>();
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
             modelBuilder.Entity<Pet>(b =>
             {
                 b.HasKey(x => x.Id);
@@ -75,5 +44,14 @@ namespace apiwithdb.Data
             });
         }
     }
->>>>>>> capas/team07-pets
+    public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+    {
+        public AppDbContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=ownersdb;Username=ownersuser;Password=supersecret");
+
+            return new AppDbContext(optionsBuilder.Options);
+        }
+    }
 }
