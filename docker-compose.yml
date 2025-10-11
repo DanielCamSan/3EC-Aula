@@ -1,7 +1,7 @@
     services:
         db:
             image: postgres:16
-            container_name: books_pg
+            container_name: vets_pg
             restart: unless-stopped
             environment:
                 POSTGRES_DB: dbs
@@ -10,14 +10,14 @@
             ports:
                 - "5432:5432"
             volumes:
-                - books_data:/var/lib/postgresql/data
+                - vets_data:/var/lib/postgresql/data
             healthcheck:
-                test: ["CMD-SHELL", "pg_isready -U booksuser -d booksdb"]
+                test: ["CMD-SHELL", "pg_isready -U user -d dbs"]
                 interval: 5s
                 timeout: 3s
                 retries: 18
     volumes:
-        books_data:
+        vets_data:
     
 
       
