@@ -1,26 +1,16 @@
-<<<<<<< HEAD
 ﻿using FirstExam.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace FirstExam.Data
-=======
-﻿using apiwithdb.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
-
-namespace apiwithdb.Data
->>>>>>> 99e531e4d6daf8c647512293ca4090505b2f442b
 {
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
-<<<<<<< HEAD
         public DbSet<Appointment> appointments { get; set; }
-
+        public DbSet<Owner> Owners => Set<Owner>();
+        public DbSet<Pet> Pets => Set<Pet>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Appointment>(a =>
@@ -31,12 +21,7 @@ namespace apiwithdb.Data
                 a.Property(x => x.Reason).IsRequired().HasMaxLength(100);
                 a.Property(x => x.Status).IsRequired().HasMaxLength(100);
                 a.Property(x => x.Notes).HasMaxLength(500);
-=======
-
-        public DbSet<Owner> Owners => Set<Owner>();
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+            });
             modelBuilder.Entity<Owner>(b =>
             {
                 b.HasKey(x => x.Id);
@@ -44,7 +29,17 @@ namespace apiwithdb.Data
                 b.Property(x => x.FullName).IsRequired().HasMaxLength(200);
                 b.Property(x => x.Phone).IsRequired().HasMaxLength(7);
                 b.Property(x => x.Active).IsRequired();
->>>>>>> 99e531e4d6daf8c647512293ca4090505b2f442b
+            });
+            modelBuilder.Entity<Pet>(p =>
+            {
+                p.HasKey(x => x.Id);
+                p.Property(x => x.OwnerId).IsRequired();
+                p.Property(x => x.Breed).IsRequired().HasMaxLength(100);
+                p.Property(x => x.sex).IsRequired().HasMaxLength(20);
+                p.Property(x => x.Species).IsRequired().HasMaxLength(100);
+                p.Property(x => x.BirthDate).IsRequired();
+                p.Property(x => x.WeightKg).IsRequired();
+                p.Property(x => x.Name).IsRequired().HasMaxLength(100);
             });
         }
     }
