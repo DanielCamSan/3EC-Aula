@@ -1,10 +1,10 @@
-﻿using apiwithdb.Models;
-using apiwithdb.Models.dtos;
+﻿using FirstExam.Models;
+using FirstExam.Models.dtos;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace apiwithdb.Repositories
+namespace FirstExam.Repositories
 {
     public interface IOwnerRepository
     {

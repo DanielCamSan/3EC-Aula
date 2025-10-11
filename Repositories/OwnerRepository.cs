@@ -1,12 +1,12 @@
-﻿using apiwithdb.Data;
-using apiwithdb.Models;
-using apiwithdb.Models.dtos;
+﻿using FirstExam.Data;
+using FirstExam.Models;
+using FirstExam.Models.dtos;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace apiwithdb.Repositories
+namespace FirstExam.Repositories
 {
     public class OwnerRepository : IOwnerRepository
     {

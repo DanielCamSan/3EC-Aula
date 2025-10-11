@@ -1,9 +1,9 @@
-﻿using apiwithdb.Models.dtos;
-using apiwithdb.Services;
+﻿using FirstExam.Models.dtos;
+using FirstExam.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
-namespace apiwithdb.Controllers
+namespace FirstExam.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]

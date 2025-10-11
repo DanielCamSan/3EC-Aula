@@ -1,11 +1,7 @@
-﻿using apiwithdb.Models;
-using apiwithdb.Models.dtos;
-using apiwithdb.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using FirstExam.Models.dtos;
+using FirstExam.Repositories;
 
-namespace apiwithdb.Services
+namespace FirstExam.Services
 {
     public class OwnerService : IOwnerService
     {
