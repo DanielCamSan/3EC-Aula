@@ -1,6 +1,6 @@
-﻿using apiwithdb.Models.Dtos.Appointments;
+﻿using FirstExam.Models.Dtos.Appointments;
 
-namespace apiwithdb.Services
+namespace FirstExam.Services
 {
     public interface IAppointmentService
     {

@@ -1,8 +1,8 @@
-﻿using apiwithdb.Models;
-using apiwithdb.Models.Dtos.Appointments;
-using apiwithdb.Repositories;
+﻿using FirstExam.Models;
+using FirstExam.Models.Dtos.Appointments;
+using FirstExam.Repositories;
 
-namespace apiwithdb.Services
+namespace FirstExam.Services
 {
     public class AppointmentService : IAppointmentService
     {

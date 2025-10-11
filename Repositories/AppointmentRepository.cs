@@ -1,8 +1,8 @@
-﻿using apiwithdb.Data;
-using apiwithdb.Models;
+﻿using FirstExam.Data;
+using FirstExam.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace apiwithdb.Repositories
+namespace FirstExam.Repositories
 {
     public class AppointmentRepository : IAppointmentRepository
     {
