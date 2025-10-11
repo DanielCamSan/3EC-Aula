@@ -13,6 +13,9 @@ namespace FirstExam.Models.dto
         [Required, StringLength(100)]
         public string Status { get; init; } = string.Empty;
             public string? Notes { get; init; }
-    
+
+        [Required]
+        public Guid OwnerId { get; init; }
+
     }
 }
