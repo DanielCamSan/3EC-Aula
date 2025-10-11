@@ -11,4 +11,25 @@ namespace FirstExam.Models.Dtos
         public string Phone { get; set; } = string.Empty;
         public bool Active { get; set; } = true;
     }
+     public record OwnerListDto(
+        Guid Id,
+        string FullName,
+        int AppointmentsCount
+    );
+    public record OwnerDetailsDto(
+        Guid Id,
+        string Email,
+        string FullName,
+        string Phone,
+        bool Active,
+        List<AppointmentListDto> Appointments
+    );
+    public record AppointmentListDto(
+        Guid Id,
+        DateTime ScheduledAt,
+        string Reason,
+        string Status,
+        string? Notes
+    );
+
 }
