@@ -20,6 +20,7 @@ namespace FirstExam.Data
                 o.Property(x => x.FullName).IsRequired().HasMaxLength(200);
                 o.Property(x => x.Phone).IsRequired();
                 o.Property(x => x.Active);
+                o.HasMany(x => x.Appointments).WithOne(a => a.owner).HasForeignKey(a => a.OwnerId).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Appointment>(a =>
@@ -30,6 +31,7 @@ namespace FirstExam.Data
                 a.HasIndex(x => x.PetId);
                 a.Property(x => x.ScheduledAt).IsRequired();
                 a.Property(x => x.Reason).IsRequired();
+                a.HasIndex(x => x.OwnerId);
             });
             modelBuilder.Entity<Pet>(b =>
             {
