@@ -1,20 +1,28 @@
 ﻿using FirstExam.Models;
+using FirstExam.Models.dtos;
+using FirstExam.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.JSInterop.Infrastructure;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using UpdateOwnerDto = FirstExam.Models.UpdateOwnerDto;
+
 namespace FirstExam.Controllers
 {
     [ApiController]
     [Route("api/v1/[Controller]")]
     public class OwnersController : Controller
     {
-        public static readonly List<Owner> owners = new()
-        {
-            new Owner { Id = Guid.NewGuid(), Email= "ana@gmail.com",FullName="Ana Pérez" ,Phone="+59177407697", Active= true },
-            new Owner { Id = Guid.NewGuid(), Email= "diego@gmail.com",FullName="Diego Castro" ,Phone="+59177777777", Active= true },
-            new Owner { Id = Guid.NewGuid(), Email= "juan@gmail.com",FullName="Juan Pérez" ,Phone="+59177777", Active= true },
+        private readonly IOwnerService _service;
 
-        };
+        public OwnersController(IOwnerService service)
+        {
+            _service = service;
+        }
+
         private static (int page, int limit) NormalizePage (int? page,int? limit)
         {
             var p = page.GetValueOrDefault(1); if (p<1) p=1;
@@ -32,11 +40,11 @@ namespace FirstExam.Controllers
         }
 
         [HttpGet]
-        public  IActionResult GetAll([FromQuery] int Page, [FromQuery] int limit, [FromQuery] string sort, [FromQuery] string? order, [FromQuery] string? Q )
+        public async Task<IActionResult> GetAll([FromQuery] int Page, [FromQuery] int limit, [FromQuery] string sort, [FromQuery] string? order, [FromQuery] string? Q )
         {
 
             var(p,l)= NormalizePage(Page,limit);
-            IEnumerable<Owner> query = owners;
+            IEnumerable<Owner> query = await _service.GetAll();
             if (!string.IsNullOrEmpty(Q))
             {
                 query = query.Where(a=>a.Email.Contains(Q, StringComparison.OrdinalIgnoreCase) || a.FullName.Contains(Q, StringComparison.OrdinalIgnoreCase));
@@ -47,51 +55,31 @@ namespace FirstExam.Controllers
             return Ok(new { data, meta = new { Page = p, limit = l, total } });
         }
         [HttpGet("{id:guid}")]
-        public ActionResult<Owner> GetOne(Guid id)
+        public async Task<IActionResult> GetOne(Guid id)
         {
-            var owner = owners.FirstOrDefault(a => a.Id == id);
+            var owner = _service.GetById(id);
             return owner is null ? NotFound(new { error = "owner not found ", status = 404 }): Ok(owner);  
 
         }
         [HttpPost]
-        public ActionResult<Owner> Create([FromBody] CreateOwnerDto dto)
+
+        public async Task<IActionResult> Create([FromBody] Models.CreateOwnerDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
-            var owner = new Owner()
-            {
-                Id = Guid.NewGuid(),
-                Email = dto.Email.Trim(),
-                FullName = dto.FullName.Trim(),
-                Phone = dto.Phone.Trim(),
-                Active = dto.Active,
-            };
-
-            owners.Add(owner);
+            var owner = await _service.Create(dto);
             return CreatedAtAction(nameof(GetOne), new {id=owner.Id},owner);
         }
         [HttpPut("{id:guid}")]
-        public ActionResult<Owner> Update(Guid id, [FromBody] UpdateOwnerDto dto)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateOwnerDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
-            var index = owners.FindIndex(a => a.Id == id);
-            if (index == -1)
-                return NotFound(new { error = "Owner not found", status = 404 });
-            var updated = new Owner
-            {
-                Id = id,
-                Email = dto.Email.Trim(),
-                FullName = dto.FullName.Trim(),
-                Phone = dto.Phone.Trim(),
-                Active = dto.Active
-            };
-            owners[index]=updated;
-            return Ok(updated);
+            return Ok(await _service.Update(id, dto));
         }
         [HttpDelete("{id:guid}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var removed = owners.RemoveAll(a => a.Id == id);
-            return removed == 0 ? NotFound(new { error = "Owner not found", status = 404 }) : NoContent();
+            var removed = await _service.Delete(id);
+            return removed ? NotFound(new { error = "Owner not found", status = 404 }) : NoContent();
         }
 
     }
