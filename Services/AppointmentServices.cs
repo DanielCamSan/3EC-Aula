@@ -6,15 +6,22 @@ namespace FirstExam.Services
     public class AppointmentServices : IAppointmentServices
     {
         private readonly IAppointmentRepository _repo;
-        public AppointmentServices(IAppointmentRepository repo)
+        private readonly IOwnerRepository _ownerRepo;
+        public AppointmentServices(IAppointmentRepository repo, IOwnerRepository owners)
         {
             _repo = repo;
+            _ownerRepo = owners;
         }
         public async Task<Appointment> Create(CreateAppointmentDto dto)
         {
             if (dto.ScheduledAt.Year < 1900)
             {
                 throw new InvalidOperationException("Year must be between 1900 and the current year.");
+            }
+            var ownerExists = await _ownerRepo.GetById(dto.OwnerId);
+            if (ownerExists == null)
+            {
+                throw new InvalidOperationException("Owner does not exist.");
             }
             var appointment = new Appointment
             {
@@ -24,6 +31,8 @@ namespace FirstExam.Services
                 Status = dto.Status,
                 Notes = dto.Notes,
                 PetId = dto.PetId,
+                OwnerId = dto.OwnerId,
+
             };
             await _repo.Add(appointment);
             return appointment;
@@ -44,8 +53,29 @@ namespace FirstExam.Services
 
         public async Task<Appointment?> GetById(Guid id)
         {
-            var book = await _repo.GetById(id);
-            return book;
+            var owner = await _repo.GetById(id);
+            return owner;
+        }
+        public async Task<bool> Update(Guid id, CreateAppointmentDto dto)
+        {
+            var existing = await _repo.GetById(id);
+            if (existing == null) return false;
+
+            var ownerExists = await _ownerRepo.GetById(dto.OwnerId);
+            if (ownerExists == null)
+            {
+                throw new InvalidOperationException("Owner does not exist.");
+            }
+
+            existing.Reason = dto.Reason;
+            existing.ScheduledAt = dto.ScheduledAt;
+            existing.Status = dto.Status;
+            existing.Notes = dto.Notes;
+            existing.PetId = dto.PetId;
+            existing.OwnerId = dto.OwnerId;
+
+            await _repo.Update(existing);
+            return true;
         }
     }
 }

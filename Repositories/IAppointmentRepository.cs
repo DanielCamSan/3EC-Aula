@@ -8,5 +8,7 @@ namespace FirstExam.Repositories
         Task<Appointment?> GetById(Guid id);
         Task Add(Appointment appointment);
         Task Delete(Guid id);
+
+        Task Update(Appointment appointment);
     }
 }

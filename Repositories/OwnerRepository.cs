@@ -10,7 +10,27 @@ namespace FirstExam.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<Owner>> GetAll()
+        public Task<List<Owner>> GetAllWithAppointments()
+        {
+            return _context.Owners.AsNoTracking().Include(o => o.Appointments).ToListAsync();
+        }
+        public Task<Owner?> GetByIdWithOwner(Guid id)
+        {
+            return _context.Owners.AsNoTracking().Include(o => o.Appointments).FirstOrDefaultAsync(o => o.Id == id);
+        }
+        public Task<bool> GetByName(string name)
+        {
+            return _context.Owners.AnyAsync(o => o.FullName.ToLower() == name.ToLower());
+        }
+        public Task<bool> ExistsByNameExcludingId(string name, Guid excludeId)
+        {
+            return _context.Owners.AnyAsync(o => o.Id != excludeId && o.FullName.ToLower() == name.ToLower());
+        }
+        public Task<bool> HasAppointments(Guid ownerId)
+        {
+            return _context.Owners.AnyAsync(o => o.Id == ownerId);
+        }
+    public async Task<IEnumerable<Owner>> GetAll()
         {
             return await _context.Owners.ToListAsync();
         }
@@ -28,13 +48,19 @@ namespace FirstExam.Repositories
             _context.Owners.Update(owner);
             await _context.SaveChangesAsync();
         }
-        public async Task Delete(Guid id)
+        public async Task<bool> Delete(Guid id)
         {
-            var owner = await GetById(id);
-            if (owner != null)
+            var entity = await _context.Owners.FirstOrDefaultAsync(o => o.Id == id);
+            if (entity is null) return false;
+            _context.Owners.Remove(entity);
+            try
             {
-                _context.Owners.Remove(owner);
                 await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                return false;
             }
         }
     }
