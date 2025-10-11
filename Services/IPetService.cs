@@ -1,7 +1,7 @@
 ﻿using apiwithdb.Models;
-using apiwithdb.Models.dtos;
+using FirstExam.Models.Dtos;
 
-namespace apiwithdb.Services
+namespace FirstExam.Services
 {
     public interface IPetService
     {

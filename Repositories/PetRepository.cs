@@ -1,9 +1,9 @@
-﻿using apiwithdb.Data;
-using apiwithdb.Models;
+﻿using FirstExam.Data;
+using FirstExam.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace apiwithdb.Repositories
+namespace FirstExam.Repositories
 {
     public class PetRepository : IPetRepository
     {

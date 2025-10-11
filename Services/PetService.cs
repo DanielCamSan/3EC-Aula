@@ -1,8 +1,8 @@
-﻿using apiwithdb.Models;
-using apiwithdb.Models.dtos;
-using apiwithdb.Repositories;
+﻿using FirstExam.Models;
+using FirstExam.Models.Dtos;
+using FirstExam.Repositories;
 
-namespace apiwithdb.Services
+namespace FirstExam.Services
 {
     public class PetService : IPetService
     {

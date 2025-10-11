@@ -1,6 +1,6 @@
-﻿using apiwithdb.Models;
+﻿using FirstExam.Models;
 
-namespace apiwithdb.Repositories
+namespace FirstExam.Repositories
 {
     public interface IPetRepository
     {
