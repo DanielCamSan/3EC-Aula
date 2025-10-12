@@ -3,8 +3,8 @@ using FirstExam.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using static Appointment;
-
 namespace FirstExam.Controllers
+
 {
     [ApiController]
     [Route("api/v1/[controller]")]
