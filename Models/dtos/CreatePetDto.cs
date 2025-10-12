@@ -5,18 +5,18 @@ namespace FirstExam.Models.dtos
     public record CreatePetDto
     {
         [Required]
-        public Guid OwnerId { get; set; } = Guid.NewGuid();
+        public required Guid OwnerId { get; init; }
         [Required, StringLength(100)]
-        public string Name { get; set; }
+        public required string Name { get; init; }
         [Required, StringLength(100)]
-        public string Species { get; set; } // dog | cat | bird | reptile | other 
+        public required string Species { get; init; } // dog | cat | bird | reptile | other 
         [Required, StringLength(100)]
-        public string Breed { get; set; }
+        public required string Breed { get; init; }
         [Required]
-        public DateTime BirthDate { get; set; }
+        public required DateTime BirthDate { get; init; }
         [Required, StringLength(20)]
-        public string sex { get; set; } // macho | hembra
+        public required string sex { get; init; }
         [Range(0, 500)]
-        public decimal? WeightKg { get; set; }
+        public decimal? WeightKg { get; init; }
     }
 }
