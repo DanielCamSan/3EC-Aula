@@ -12,7 +12,7 @@
     volumes:
       - team08_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U team08user -d team08db"]
+      test: ["CMD-SHELL", "pg_isready -U team08user -d team0sdb"]
       interval: 5s
       timeout: 3s
       retries: 10
