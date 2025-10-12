@@ -14,26 +14,31 @@ namespace FirstExam.Repositories
             }
             public async Task Add(Pet pet)
             {
-                await _context.Books.AddAsync(pet);
+                await _context.Pets.AddAsync(pet);
+            }
+
+            public async Task Update(Pet pet)
+            {
+                _context.Pets.Update(pet);
             }
 
             public async Task Delete(Guid id)
             {
-                var book = await _context.Books.FirstOrDefaultAsync(x => x.Id == id);
+                var book = await _context.Pets.FirstOrDefaultAsync(x => x.Id == id);
                 if (book != null)
                 {
-                    _context.Books.Remove(book);
+                    _context.Pets.Remove(book);
                 }
             }
 
             public async Task<IEnumerable<Pet>> GetAll()
             {
-                return await _context.Books.ToListAsync();
+                return await _context.Pets.ToListAsync();
             }
 
             public async Task<Pet?> GetById(Guid id)
             {
-                return await _context.Books.FirstOrDefaultAsync(x => x.Id == id);
+                return await _context.Pets.FirstOrDefaultAsync(x => x.Id == id);
             }
         }
 }

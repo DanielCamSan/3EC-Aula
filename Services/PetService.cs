@@ -16,8 +16,23 @@ namespace FirstExam.Services
             await _repo.Add(pet);
             return pet;
         }
+        public async Task<Pet?> Update(Guid id, UpdatePetDto dto)
+        {
+            var existingPet = await _repo.GetById(id);
+            if (existingPet is null) return null;
 
+            
+            existingPet.Name = dto.Name?.Trim();
+            existingPet.Species = dto.Species?.Trim();
+            existingPet.Breed = dto.Breed;
+            existingPet.BirthDate = dto.BirthDate;
+            existingPet.sex = dto.sex;
+            existingPet.WeightKg = dto.WeightKg;
+            
 
+            await _repo.Update(existingPet);
+            return existingPet;
+        }
 
         public async Task<bool> Delete(Guid id)
         {

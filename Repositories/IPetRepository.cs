@@ -9,7 +9,9 @@ namespace FirstExam.Repositories
         Task<Pet?> GetById(Guid Id);
 
         Task Add(Pet pet);
-        Task Delete(Pet pet);
 
+        Task Delete(Guid Id);
+
+        Task Update(Pet pet);
     }
 }
