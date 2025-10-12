@@ -1,5 +1,4 @@
-﻿
-using FirstExam.Data;
+﻿using FirstExam.Data;
 using FirstExam.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,9 +16,10 @@ namespace FirstExam.Repositories
             _db.Appointments.AsNoTracking()
                .FirstOrDefaultAsync(a => a.Id == id);
 
-        public Task<List<Appointment>> GetByPetId(Guid petId) =>
+        // CAMBIO: Método renombrado de GetByPetId a GetByOwnerId
+        public Task<List<Appointment>> GetByOwnerId(Guid ownerId) =>
             _db.Appointments.AsNoTracking()
-               .Where(a => a.PetId == petId)
+               .Where(a => a.OwnerId == ownerId)
                .ToListAsync();
 
         public Task<List<Appointment>> GetByStatus(string status) =>
@@ -55,7 +55,6 @@ namespace FirstExam.Repositories
             }
             catch (DbUpdateException)
             {
-                // Posible violación por FK si hay relaciones dependientes
                 return false;
             }
         }
