@@ -1,4 +1,5 @@
-﻿namespace FirstExam.Services
+﻿using FirstExam.Models.dtos;
+namespace FirstExam.Services
 {
     public interface IPetService
     {

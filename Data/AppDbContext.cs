@@ -17,7 +17,10 @@ namespace FirstExam.Data
             modelBuilder.Entity<Pet>(p =>
             {
                 p.HasKey(x => x.Id);
-                p.HasKey(x => x.OwnerId);
+                p.HasOne(p => p.Owner)
+                      .WithOne(o => o.Pet)
+                      .HasForeignKey<Pet>(p => p.OwnerId)
+                      .OnDelete(DeleteBehavior.Cascade);
                 p.Property(x => x.Name).IsRequired().HasMaxLength(200);
                 p.Property(x => x.Species).IsRequired();
                 p.Property(x => x.Breed).IsRequired();
@@ -29,7 +32,16 @@ namespace FirstExam.Data
             modelBuilder.Entity<Appointment>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.PetId).IsRequired();
+                entity.HasOne(a => a.Pet)
+                      .WithMany(p => p.Appointments)
+                      .HasForeignKey(a => a.PetId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(a => a.Owner)
+                      .WithMany(o => o.Appointments)
+                      .HasForeignKey(a => a.OwnerId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
                 entity.Property(e => e.ScheduledAt).IsRequired();
                 entity.Property(e => e.Reason).HasMaxLength(500);
                 entity.Property(e => e.Status).IsRequired();
