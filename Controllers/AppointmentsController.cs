@@ -1,109 +1,54 @@
-﻿using FirstExam.Models.DTO;     
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using FirstExam.Models; 
+using FirstExam.Services;
+using FirstExam.Models.DTO; 
 
 namespace FirstExam.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     public class AppointmentsController : ControllerBase
     {
-        public static readonly List<Appointment> appointments = new()
-        {
-            new Appointment { Id = Guid.NewGuid(), PetId = Guid.NewGuid(), ScheduledAt = DateTime.Now.AddHours(4), Reason = "Vacunación", Status="scheduled", Notes = "Primera dosis" },
-            new Appointment { Id = Guid.NewGuid(), PetId = Guid.NewGuid(), ScheduledAt = DateTime.Now.AddDays(1), Reason = "Control",     Status="scheduled", Notes = "Traer carnet" }
-        };
+        private readonly IAppointmentService _service;
 
-        // --- Helpers: paginación/orden/meta/wrap ---
-        private static (int page, int limit) NormalizePage(int? page, int? limit)
+        public AppointmentsController(IAppointmentService service)
         {
-            var p = page.GetValueOrDefault(1); if (p < 1) p = 1;
-            var l = limit.GetValueOrDefault(10); if (l < 1) l = 1; if (l > 100) l = 100;
-            return (p, l);
+            _service = service;
         }
 
-        private static IEnumerable<T> OrderByProp<T>(IEnumerable<T> src, string? sort, string? order)
-        {
-            if (string.IsNullOrWhiteSpace(sort)) return src;
-            var prop = typeof(T).GetProperty(sort, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-            if (prop is null) return src;
-
-            bool desc = string.Equals(order, "desc", StringComparison.OrdinalIgnoreCase);
-            return desc ? src.OrderByDescending(x => prop.GetValue(x)) : src.OrderBy(x => prop.GetValue(x));
-        }
-
-        private static object Wrap(object? data, int? page = null, int? limit = null, int? total = null)
-            => new
-            {
-                data,
-                meta = new
-                {
-                    page,
-                    limit,
-                    total,
-                    count = data switch
-                    {
-                        IEnumerable<object> e => e.Count(),
-                        System.Collections.IEnumerable ie => ie.Cast<object>().Count(),
-                        null => 0,
-                        _ => 1
-                    }
-                }
-            };
-
-        // --- GET /api/v1/appointments?Page=1&Limit=10&Sort=ScheduledAt&Order=asc&q=vacuna ---
         [HttpGet]
         public IActionResult GetAll(
-            [FromQuery] int? Page,
-            [FromQuery] int? Limit,
-            [FromQuery] string? Sort,
-            [FromQuery] string? Order,
-            [FromQuery] string? q)
+            [FromQuery] string? sort = "scheduledAt",
+            [FromQuery] string? order = "asc",
+            [FromQuery] int page = 1,
+            [FromQuery] int limit = 10)
         {
-            var (p, l) = NormalizePage(Page, Limit);
-
-            IEnumerable<Appointment> query = appointments;
-
-            // Filtro “q” por Reason, Status y Notes
-            if (!string.IsNullOrWhiteSpace(q))
+            var items = _service.List(sort, order, page, limit, out var total).ToList();
+            return Ok(new
             {
-                query = query.Where(a =>
-                    (a.Reason?.Contains(q, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (a.Status?.Contains(q, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (a.Notes?.Contains(q, StringComparison.OrdinalIgnoreCase) ?? false));
-            }
-
-            // Orden dinámico por cualquier propiedad pública
-            query = OrderByProp(query, Sort, Order);
-
-            var total = query.Count();
-            var data = query.Skip((p - 1) * l).Take(l).ToList();
-
-            return Ok(Wrap(data, p, l, total));
+                data = items,
+                meta = new { page, limit, total, count = items.Count }
+            });
         }
 
-        // --- GET /api/v1/appointments/{id} ---
+        // GET /api/appointments/{id}
         [HttpGet("{id:guid}")]
-        public IActionResult GetOne([FromRoute] Guid id)
+        public IActionResult GetOne(Guid id)
         {
-            var appointment = appointments.FirstOrDefault(a => a.Id == id);
-            if (appointment is null)
-                return NotFound(Wrap(new { error = "Appointment not found", status = 404 }));
-
-            return Ok(Wrap(appointment));
+            var appt = _service.Get(id);
+            return appt is null
+                ? NotFound(new { error = "Appointment not found", status = 404 })
+                : Ok(appt);
         }
 
-        // --- POST /api/v1/appointments ---
+        // POST /api/appointments
         [HttpPost]
         public IActionResult Create([FromBody] CreateAppointmentDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
-            var appointment = new Appointment
+            var created = _service.Create(new Appointment
             {
                 Id = Guid.NewGuid(),
                 PetId = dto.PetId,
@@ -111,44 +56,41 @@ namespace FirstExam.Controllers
                 Reason = dto.Reason?.Trim() ?? string.Empty,
                 Status = dto.Status?.Trim() ?? "scheduled",
                 Notes = dto.Notes?.Trim()
-            };
+            });
 
-            appointments.Add(appointment);
-
-            return CreatedAtAction(nameof(GetOne), new { id = appointment.Id }, Wrap(appointment));
+            return CreatedAtAction(nameof(GetOne), new { id = created.Id }, created);
         }
 
-        // --- PUT /api/v1/appointments/{id} ---
+        // PUT /api/appointments/{id}
         [HttpPut("{id:guid}")]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateAppointmentDto dto)
+        public IActionResult Update(Guid id, [FromBody] UpdateAppointmentDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
-            var idx = appointments.FindIndex(a => a.Id == id);
-            if (idx == -1)
-                return NotFound(Wrap(new { error = "Appointment not found", status = 404 }));
+            var ok = _service.Update(id, new Appointment
+            {
+                Id = id,
+                PetId = dto.PetId,
+                ScheduledAt = dto.ScheduledAt,
+                Reason = dto.Reason?.Trim() ?? string.Empty,
+                Status = dto.Status?.Trim() ?? "scheduled",
+                Notes = dto.Notes?.Trim()
+            });
 
-            var current = appointments[idx];
-            current.PetId = dto.PetId;
-            current.ScheduledAt = dto.ScheduledAt;
-            current.Reason = dto.Reason?.Trim() ?? current.Reason;
-            current.Status = dto.Status?.Trim() ?? current.Status;
-            current.Notes = dto.Notes?.Trim();
+            if (!ok) return NotFound(new { error = "Appointment not found", status = 404 });
 
-            appointments[idx] = current;
-
-            return Ok(Wrap(current));
+            var updated = _service.Get(id)!;
+            return Ok(updated);
         }
 
-        // --- DELETE /api/v1/appointments/{id} ---
+        // DELETE /api/appointments/{id}
         [HttpDelete("{id:guid}")]
-        public IActionResult Delete([FromRoute] Guid id)
+        public IActionResult Delete(Guid id)
         {
-            var removed = appointments.RemoveAll(a => a.Id == id);
-            if (removed == 0)
-                return NotFound(Wrap(new { error = "Appointment not found", status = 404 }));
-
-            return NoContent();
+            var ok = _service.Delete(id);
+            return ok
+                ? NoContent()
+                : NotFound(new { error = "Appointment not found", status = 404 });
         }
     }
 }
