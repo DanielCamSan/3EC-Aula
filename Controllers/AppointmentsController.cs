@@ -1,10 +1,12 @@
-﻿using FirstExam.Models.DTO;
-using FirstExam.Services;
+﻿using FirstExam.Models.DTO;     
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using static Appointment;
-namespace FirstExam.Controllers
+using FirstExam.Models; 
 
+namespace FirstExam.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
@@ -75,7 +77,7 @@ namespace FirstExam.Controllers
                     (a.Notes?.Contains(q, StringComparison.OrdinalIgnoreCase) ?? false));
             }
 
-            // Orden dinámico por cualquier propiedad pública (Id, PetId, ScheduledAt, Reason, Status, Notes)
+            // Orden dinámico por cualquier propiedad pública
             query = OrderByProp(query, Sort, Order);
 
             var total = query.Count();
@@ -104,8 +106,8 @@ namespace FirstExam.Controllers
             var appointment = new Appointment
             {
                 Id = Guid.NewGuid(),
-                PetId = dto.PetId,                                            // usar el enviado
-                ScheduledAt = dto.ScheduledAt,                               // usar el enviado
+                PetId = dto.PetId,
+                ScheduledAt = dto.ScheduledAt,
                 Reason = dto.Reason?.Trim() ?? string.Empty,
                 Status = dto.Status?.Trim() ?? "scheduled",
                 Notes = dto.Notes?.Trim()
@@ -126,7 +128,6 @@ namespace FirstExam.Controllers
             if (idx == -1)
                 return NotFound(Wrap(new { error = "Appointment not found", status = 404 }));
 
-            // Actualizamos respetando lo enviado
             var current = appointments[idx];
             current.PetId = dto.PetId;
             current.ScheduledAt = dto.ScheduledAt;
