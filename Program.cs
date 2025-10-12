@@ -1,4 +1,12 @@
+using FirstExam.Repositories;
+using FirstExam.Services;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<FirstExam.Data.AppDbContext>(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddScoped<FirstExam.Repositories.IAppointmentRepository, FirstExam.Repositories.AppointmentRepository>();
+builder.Services.AddScoped<FirstExam.Services.IAppointmentService, FirstExam.Services.AppointmentService>();
 
 builder.Services.AddCors(
     options =>
@@ -8,7 +16,8 @@ builder.Services.AddCors(
             policy.WithOrigins("https://localhost:7162", "http://127.0.0.1:5500").AllowAnyMethod().AllowAnyHeader();
         });
     });
-
+builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+builder.Services.AddScoped<IOwnerService, OwnerService>();
 
 builder.Services.AddControllers();
 
