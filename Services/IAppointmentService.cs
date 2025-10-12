@@ -9,7 +9,7 @@ namespace FirstExam.Services
         Task<object> Create(CreateAppointmentDto dto);
         Task<object?> Update(Guid id, UpdateAppointmentDto dto);
         Task<bool> Delete(Guid id);
-        Task<IEnumerable<object>> GetByPetId(Guid petId);
+        Task<IEnumerable<object>> GetByOwnerId(Guid ownerId);
         Task<bool> UpdateStatus(Guid id, string status);
     }
 }

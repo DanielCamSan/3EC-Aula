@@ -4,7 +4,7 @@
     {
         Task<List<Appointment>> GetAll();
         Task<Appointment?> GetById(Guid id);
-        Task<List<Appointment>> GetByPetId(Guid petId);
+        Task<List<Appointment>> GetByOwnerId(Guid ownerId);
         Task<List<Appointment>> GetByStatus(string status);
         Task<bool> ExistsById(Guid id);
         Task Add(Appointment appointment);

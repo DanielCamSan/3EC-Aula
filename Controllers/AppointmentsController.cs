@@ -68,10 +68,11 @@ namespace FirstExam.Controllers
                 : NotFound(new { error = "Appointment not found or already completed", status = 404 });
         }
 
-        [HttpGet("pet/{petId:guid}")]
-        public async Task<IActionResult> GetByPetId(Guid petId)
+        // CAMBIO: Endpoint renombrado de pet a owner
+        [HttpGet("owner/{ownerId:guid}")]
+        public async Task<IActionResult> GetByOwnerId(Guid ownerId)
         {
-            var appointments = await _service.GetByPetId(petId);
+            var appointments = await _service.GetByOwnerId(ownerId);
             return Ok(appointments);
         }
 

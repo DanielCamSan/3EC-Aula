@@ -17,7 +17,7 @@ namespace FirstExam.Services
                 .Select(a => new
                 {
                     a.Id,
-                    a.PetId,
+                    a.OwnerId, 
                     a.ScheduledAt,
                     a.Reason,
                     a.Status
@@ -32,7 +32,7 @@ namespace FirstExam.Services
             return new
             {
                 appointment.Id,
-                appointment.PetId,
+                appointment.OwnerId, // CAMBIO: OwnerId en lugar de PetId
                 appointment.ScheduledAt,
                 appointment.Reason,
                 appointment.Status,
@@ -52,7 +52,7 @@ namespace FirstExam.Services
             var appointment = new Appointment
             {
                 Id = Guid.NewGuid(),
-                PetId = dto.PetId,
+                OwnerId = dto.OwnerId, // CAMBIO: OwnerId en lugar de PetId
                 ScheduledAt = dto.ScheduledAt,
                 Reason = dto.Reason.Trim(),
                 Status = dto.Status.ToLower(),
@@ -64,7 +64,7 @@ namespace FirstExam.Services
             return new
             {
                 appointment.Id,
-                appointment.PetId,
+                appointment.OwnerId, // CAMBIO: OwnerId en lugar de PetId
                 appointment.ScheduledAt,
                 appointment.Reason,
                 appointment.Status,
@@ -84,7 +84,7 @@ namespace FirstExam.Services
             if (!validStatuses.Contains(dto.Status.ToLower()))
                 throw new InvalidOperationException("Invalid appointment status.");
 
-            current.PetId = dto.PetId;
+            current.OwnerId = dto.OwnerId; // CAMBIO: OwnerId en lugar de PetId
             current.ScheduledAt = dto.ScheduledAt;
             current.Reason = dto.Reason.Trim();
             current.Status = dto.Status.ToLower();
@@ -95,7 +95,7 @@ namespace FirstExam.Services
             return new
             {
                 current.Id,
-                current.PetId,
+                current.OwnerId, // CAMBIO: OwnerId en lugar de PetId
                 current.ScheduledAt,
                 current.Reason,
                 current.Status,
@@ -112,15 +112,15 @@ namespace FirstExam.Services
             return await _repo.Delete(id);
         }
 
-        public async Task<IEnumerable<object>> GetByPetId(Guid petId)
+        public async Task<IEnumerable<object>> GetByOwnerId(Guid ownerId) // ← NUEVO NOMBRE
         {
-            var appointments = await _repo.GetByPetId(petId);
+            var appointments = await _repo.GetByOwnerId(ownerId);
             return appointments
                 .OrderBy(a => a.ScheduledAt)
                 .Select(a => new
                 {
                     a.Id,
-                    a.PetId,
+                    a.OwnerId,
                     a.ScheduledAt,
                     a.Reason,
                     a.Status

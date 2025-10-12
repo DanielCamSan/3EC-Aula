@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FirstExam.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251012000453_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251012224405_CleanStartNoFK")]
+    partial class CleanStartNoFK
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,12 +28,13 @@ namespace FirstExam.Migrations
             modelBuilder.Entity("Appointment", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Notes")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("PetId")
+                    b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Reason")
@@ -53,15 +54,54 @@ namespace FirstExam.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PetId");
+                    b.HasIndex("OwnerId");
 
                     b.HasIndex("ScheduledAt");
 
                     b.HasIndex("Status");
 
-                    b.HasIndex("PetId", "ScheduledAt");
+                    b.HasIndex("OwnerId", "ScheduledAt");
 
                     b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("FirstExam.Models.Owner", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("character varying(7)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Owner");
+                });
+
+            modelBuilder.Entity("Appointment", b =>
+                {
+                    b.HasOne("FirstExam.Models.Owner", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
                 });
 #pragma warning restore 612, 618
         }
