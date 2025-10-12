@@ -1,33 +1,41 @@
+﻿using FirstExam.Data;
 using FirstExam.Repositories;
 using FirstExam.Services;
-using FirstExam.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(
-    options =>
-    {
-        options.AddPolicy("MiPoliticaCors", policy =>
-        {
-            policy.WithOrigins("https://localhost:7162", "http://127.0.0.1:5500").AllowAnyMethod().AllowAnyHeader();
-        });
-    });
-
+// Add services to the container.
 builder.Services.AddControllers();
 
-// Configuraci�n de Entity Framework para PostgreSQL
-builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Configuración de CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MiPoliticaCors", policy =>
+    {
+        policy.WithOrigins("https://localhost:7162", "http://127.0.0.1:5500")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
-// Inyecci�n de dependencias para Appointment
-builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+// Configuración de Entity Framework para PostgreSQL (igual que tu docente)
+builder.Services.AddDbContext<FirstExam.Data.AppDbContext>(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+
+// Dependency Injection (exactamente el mismo patrón)
+builder.Services.AddScoped<FirstExam.Repositories.IAppointmentRepository, FirstExam.Repositories.AppointmentRepository>();
+builder.Services.AddScoped<FirstExam.Services.IAppointmentService, FirstExam.Services.AppointmentService>();
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
+
 app.UseCors("MiPoliticaCors");
+
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();
