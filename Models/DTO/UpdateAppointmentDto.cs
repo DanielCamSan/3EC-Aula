@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FirstExam.Dtos
+namespace FirstExam.Models.DTO
 {
     public class UpdateAppointmentDto
     {
