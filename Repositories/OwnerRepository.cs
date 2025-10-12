@@ -1,5 +1,7 @@
 ﻿using System;
 using FirstExam.Models;
+using FirstExam.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstExam.Repository
 {
