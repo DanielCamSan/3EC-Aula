@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using FirstExam.Models;
 namespace FirstExam.Models
 {
     public class Appointment
