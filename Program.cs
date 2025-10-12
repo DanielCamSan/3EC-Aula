@@ -13,6 +13,8 @@ builder.Services.AddCors(
 
 
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<FirstExam.Data.AppDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
@@ -29,6 +31,12 @@ builder.Services.AddScoped<FirstExam.Repositories.IAppointmentRepository, FirstE
 builder.Services.AddScoped<FirstExam.Services.IAppointmentService, FirstExam.Services.AppointmentService>();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 

@@ -17,7 +17,10 @@ namespace FirstExam.Services
             {
                 Id = Guid.NewGuid(),
                 Reason = dto.Reason.Trim(),
-                Status = dto.Status
+                Status = dto.Status,
+                Notes = dto.Notes,
+                PetId = dto.PetId,
+                ScheduledAt = dto.ScheduledAt
             };
             await _repo.Add(appointment);
             return appointment;

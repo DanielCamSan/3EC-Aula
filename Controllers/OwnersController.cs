@@ -24,7 +24,7 @@ namespace FirstExam.Controllers
             return (p, l);
 
         }
-        private static IEnumerable<T> OrderbyProp<T>(IEnumerable<T> src,string? sort, string order)
+        private static IEnumerable<T> OrderbyProp<T>(IEnumerable<T> src,string? sort, string? order)
         {
             if (string.IsNullOrEmpty(sort)) return src;
             var prop=typeof(T).GetProperty(sort, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
@@ -34,7 +34,7 @@ namespace FirstExam.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int Page, [FromQuery] int limit, [FromQuery] string sort, [FromQuery] string? order, [FromQuery] string? Q )
+        public async Task<IActionResult> GetAll([FromQuery] int? Page, [FromQuery] int? limit, [FromQuery] string? sort, [FromQuery] string? order, [FromQuery] string? Q )
         {
 
             var(p,l)= NormalizePage(Page,limit);

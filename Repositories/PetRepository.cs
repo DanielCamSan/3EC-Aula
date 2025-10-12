@@ -51,7 +51,7 @@ namespace FirstExam.Repositories
             pet.Breed = dto.Breed;
             pet.BirthDate = dto.BirthDate;
             pet.sex = dto.sex;
-            pet.WeightKg = dto.WeightKg != null ? dto.WeightKg : 0;
+            pet.WeightKg = (dto.WeightKg != null ? dto.WeightKg : 0);
             
 
             _context.Pets.Update(pet);
