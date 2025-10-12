@@ -24,6 +24,11 @@ namespace FirstExam.Data
                 b.Property(x => x.BirthDate).IsRequired();
                 b.Property(x => x.sex).IsRequired().HasMaxLength(20);
                 b.Property(x => x.WeightKg);
+
+                b.HasOne<Owner>()
+                 .WithMany()
+                 .HasForeignKey(p => p.OwnerId)
+                 .IsRequired();
             });
             modelBuilder.Entity<Owner>(b =>
             {
@@ -41,6 +46,11 @@ namespace FirstExam.Data
                 b.Property(x => x.Reason).IsRequired().HasMaxLength(100); ;
                 b.Property(x => x.Status).IsRequired().HasMaxLength(100); ;
                 b.Property(x => x.Notes);
+
+                b.HasOne<Pet>()
+                   .WithMany()
+                   .HasForeignKey(a => a.PetId)
+                   .IsRequired();
             });
         }
     }
