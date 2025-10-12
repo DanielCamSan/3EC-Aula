@@ -1,6 +1,5 @@
 ﻿using FirstExam.Models;
 
-
 namespace FirstExam.Repository
 {
     public interface IOwnerRepository
