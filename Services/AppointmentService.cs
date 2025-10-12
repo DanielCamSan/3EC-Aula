@@ -3,7 +3,6 @@ using FirstExam.Models.dtos;
 using FirstExam.Repositories;
 using System.Reflection;
 
-
 namespace FirstExam.Services
 {
     public class AppointmentService : IAppointmentService
@@ -47,6 +46,7 @@ namespace FirstExam.Services
             {
                 Id = Guid.NewGuid(),
                 PetId = dto.PetId,
+                OwnerId = dto.OwnerId,
                 ScheduledAt = dto.ScheduledAt,
                 Reason = dto.Reason.Trim(),
                 Notes = dto.Notes?.Trim(),
@@ -57,20 +57,17 @@ namespace FirstExam.Services
 
         public async Task<Appointment?> UpdateAsync(Guid id, UpdateAppointmentDto dto)
         {
-            var existingAppointment = await _repository.GetByIdAsync(id);
-            if (existingAppointment is null) return null;
+            var existing = await _repository.GetByIdAsync(id);
+            if (existing is null) return null;
 
-            var updated = new Appointment
-            {
-                Id = id,
-                PetId = dto.PetId,
-                ScheduledAt = dto.ScheduledAt,
-                Reason = dto.Reason.Trim(),
-                Status = dto.Status.Trim(),
-                Notes = dto.Notes?.Trim()
-            };
+            existing.PetId = dto.PetId;
+            existing.OwnerId = dto.OwnerId;
+            existing.ScheduledAt = dto.ScheduledAt;
+            existing.Reason = dto.Reason.Trim();
+            existing.Status = dto.Status.Trim();
+            existing.Notes = dto.Notes?.Trim();
 
-            return await _repository.UpdateAsync(id, updated);
+            return await _repository.UpdateAsync(id, existing);
         }
 
         public async Task<bool> DeleteAsync(Guid id)

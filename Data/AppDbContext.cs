@@ -15,6 +15,22 @@ namespace FirstExam.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Owner>()
+                .HasMany(o => o.Pets)
+                .WithOne(p => p.Owner)
+                .HasForeignKey(p => p.OwnerId);
+
+            modelBuilder.Entity<Owner>()
+                .HasMany(o => o.Appointments)
+                .WithOne(a => a.Owner)
+                .HasForeignKey(a => a.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict); 
+
+            modelBuilder.Entity<Pet>()
+                .HasMany(p => p.Appointments)
+                .WithOne(a => a.Pet)
+                .HasForeignKey(a => a.PetId);
+
             modelBuilder.Entity<Owner>(b =>
             {
                 b.HasKey(x => x.Id);
@@ -27,23 +43,15 @@ namespace FirstExam.Data
             modelBuilder.Entity<Pet>(b =>
             {
                 b.HasKey(x => x.Id);
-                b.Property(x => x.OwnerId).IsRequired();
                 b.Property(x => x.Name).IsRequired().HasMaxLength(100);
                 b.Property(x => x.Species).IsRequired().HasMaxLength(100);
-                b.Property(x => x.Breed).HasMaxLength(100);
-                b.Property(x => x.sex).HasMaxLength(20);
-                b.Property(x => x.WeightKg);
-                b.Property(x => x.BirthDate).IsRequired();
             });
 
             modelBuilder.Entity<Appointment>(b =>
             {
                 b.HasKey(x => x.Id);
-                b.Property(x => x.PetId).IsRequired();
-                b.Property(x => x.ScheduledAt).IsRequired();
                 b.Property(x => x.Reason).IsRequired().HasMaxLength(100);
                 b.Property(x => x.Status).IsRequired().HasMaxLength(100);
-                b.Property(x => x.Notes).HasMaxLength(500);
             });
         }
     }
