@@ -15,12 +15,18 @@ namespace FirstExam.Repositories
 
         public async Task<IEnumerable<Appointment>> GetAllAsync()
         {
-            return await _context.Appointments.ToListAsync();
+            return await _context.Appointments
+                .Include(a => a.Pet)
+                .Include(a => a.Owner)
+                .ToListAsync();
         }
 
         public async Task<Appointment?> GetByIdAsync(Guid id)
         {
-            return await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.Appointments
+                .Include(a => a.Pet)
+                .Include(a => a.Owner)
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<Appointment> CreateAsync(Appointment appointment)
@@ -39,11 +45,9 @@ namespace FirstExam.Repositories
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
-            if (appointment == null)
-            {
-                return false;
-            }
+            var appointment = await GetByIdAsync(id);
+            if (appointment == null) return false;
+
             _context.Appointments.Remove(appointment);
             await _context.SaveChangesAsync();
             return true;
