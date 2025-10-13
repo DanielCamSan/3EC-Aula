@@ -1,6 +1,7 @@
 ﻿using FirstExam.Models;
 using FirstExam.Data;
 using Microsoft.EntityFrameworkCore;
+using FirstExam.Models.Dtos;
 
 namespace FirstExam.Repositories
 {
@@ -71,7 +72,7 @@ namespace FirstExam.Repositories
             pet.Species = dto.Species;
             pet.Breed = dto.Breed;
             pet.BirthDate = dto.BirthDate;
-            pet.sex = dto.sex;
+            pet.sex = dto.Sex;
             pet.WeightKg = dto.WeightKg;
             pet.OwnerId = dto.OwnerId;
 
@@ -94,6 +95,30 @@ namespace FirstExam.Repositories
             {
                 return false;
             }
+        }
+
+        public Task<bool> GetByName(string name)
+        {
+            return _context.Pets.AnyAsync(o => o.Name.ToLower() == name.ToLower());
+
+        }
+
+        public Task<bool> HasAppointments(Guid petId)
+        {
+            return _context.Pets.AnyAsync(o => o.Id == petId);
+
+        }
+
+        public Task<Pet?> GetByIdWithPet(Guid id)
+        {
+            return _context.Pets.AsNoTracking().Include(o => o.Appointments).FirstOrDefaultAsync(o => o.Id == id);
+
+        }
+
+        public Task<List<Pet>> GetAllWithAppointments()
+        {
+            return _context.Pets.AsNoTracking().Include(o => o.Appointments).ToListAsync();
+
         }
     }
 }

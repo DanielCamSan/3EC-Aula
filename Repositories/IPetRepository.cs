@@ -1,4 +1,5 @@
 ﻿using FirstExam.Models;
+using FirstExam.Models.Dtos;
 
 namespace FirstExam.Repositories
 {
@@ -9,5 +10,13 @@ namespace FirstExam.Repositories
         Task Add(Pet pet);
         Task<bool> Delete(Guid id);
         Task<Pet?> Update(Guid id, UpdatePetDto dto);
+        Task<bool> GetByName(string name);
+        Task<bool> HasAppointments(Guid petId);
+
+        Task<Pet?> GetByIdWithPet(Guid id);
+
+        Task<bool> ExistsByNameExcludingId(string name, Guid excludeId);
+
+        Task<List<Pet>> GetAllWithAppointments();
     }
 }

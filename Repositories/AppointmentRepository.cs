@@ -30,7 +30,7 @@ namespace FirstExam.Repositories
 
         public async Task<IEnumerable<Appointment>> GetAll()
         {
-            return await _context.Appointments.AsNoTracking().Include(a => a.owner).ToListAsync();
+            return await _context.Appointments.AsNoTracking().Include(a => a.owner).Include(a => a.Pet).ToListAsync();
         }
 
         public async Task<Appointment?> GetById(Guid id)
