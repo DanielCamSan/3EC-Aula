@@ -51,12 +51,14 @@ namespace FirstExam.Data
                 b.Property(x => x.BirthDate);
                 b.Property(x => x.Sex);
                 b.Property(x => x.WeightKg);
-                b.HasOne<Owner>().WithOne().HasForeignKey<Pet>(x => x.OwnerId).OnDelete(DeleteBehavior.Restrict);
-
-                b.HasMany(p => p.Appointments)           
-                 .WithOne(a => a.Pet)                   
-                 .HasForeignKey(a => a.PetId)            
-                 .OnDelete(DeleteBehavior.Restrict);      
+                b.HasMany(p => p.Appointments)
+                 .WithOne(a => a.Pet)
+                 .HasForeignKey(a => a.PetId)
+                 .OnDelete(DeleteBehavior.Restrict);
+                b.HasOne(o => o.Owners) 
+                    .WithMany()
+                    .HasForeignKey(b => b.OwnerId)
+                    .OnDelete(DeleteBehavior.Restrict);     
             });
         }
     }
