@@ -43,11 +43,7 @@ namespace FirstExam.Repositories
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<bool> ExistsByName(string name)
-        {
-            return await _context.Pets.AnyAsync(p => p.Name.ToLower() == name.ToLower());
-        }
-
+     
         
         public async Task<bool> ExistsByNameExcludingId(string name, Guid excludeId)
         {
@@ -72,7 +68,7 @@ namespace FirstExam.Repositories
             pet.Species = dto.Species;
             pet.Breed = dto.Breed;
             pet.BirthDate = dto.BirthDate;
-            pet.sex = dto.Sex;
+            pet.Sex = dto.Sex;
             pet.WeightKg = dto.WeightKg;
             pet.OwnerId = dto.OwnerId;
 
@@ -97,7 +93,7 @@ namespace FirstExam.Repositories
             }
         }
 
-        public Task<bool> GetByName(string name)
+        public Task<bool> ExistsByName(string name)
         {
             return _context.Pets.AnyAsync(o => o.Name.ToLower() == name.ToLower());
 
