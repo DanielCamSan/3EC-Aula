@@ -8,22 +8,24 @@ namespace FirstExam.Services
     {
         private readonly IPetRepository _repo;
 
-        public PetService(IPetRepository repo)
+        private readonly IOwnerRepository _ownerRepo;
+        public PetService(IPetRepository repo, IOwnerRepository ownerRepo)
         {
             _repo = repo;
+            _ownerRepo = ownerRepo;
         }
         public async Task<Pet> Create(CreatePetDto dto)
         {
             var pet = new Pet
             {
                 Id = Guid.NewGuid(),
-                OwnerId = dto.OwnerId,
                 Name = dto.Name,
-                Species = dto.Species,
-                Breed = dto.Breed,
                 BirthDate = dto.BirthDate,
+                Breed = dto.Breed,
                 sex = dto.sex,
-                WeightKg = dto.WeightKg != null ? dto.WeightKg : 0,
+                OwnerId = dto.OwnerId,
+                Species = dto.Species,
+                WeightKg = dto.WeightKg,
             };
             await _repo.Add(pet);
             return pet;
@@ -50,8 +52,18 @@ namespace FirstExam.Services
 
         public async Task<Pet?> Update(Guid id, UpdatePetDto dto)
         {
-            var pet = await _repo.Update(id, dto);
-            return pet;
+            var current = await _repo.GetById(id);
+            if (current == null) throw new InvalidOperationException("Pet not found");
+            current.OwnerId = dto.OwnerId;
+            current.Name = dto.Name;
+            current.BirthDate = dto.BirthDate;
+            current.Breed = dto.Breed;
+            current.Species = dto.Species;
+            current.WeightKg = dto.WeightKg;
+            current.sex = dto.sex;
+
+            await _repo.Update(current);
+            return current;
         }
     }
 }

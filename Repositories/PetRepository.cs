@@ -32,29 +32,16 @@ namespace FirstExam.Repositories
 
         public async Task<List<Pet>> GetAll()
         {
-            return await _context.Pets.ToListAsync();
+            return await _context.Pets.AsNoTracking().Include(p => p.Owner).Include(p => p.Appointments).ToListAsync();
         }
 
         public async Task<Pet?> GetById(Guid id)
         {
-            return await _context.Pets.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Pets.Include(p => p.Owner).Include(p => p.Appointments).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Pet?> Update(Guid id, UpdatePetDto dto)
+        public async Task<Pet?> Update(Pet pet)
         {
-            var pet = await _context.Pets.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (pet == null) return null;
-
-            pet.OwnerId = dto.OwnerId;
-            pet.Name = dto.Name;
-            pet.Species = dto.Species;
-            pet.Breed = dto.Breed;
-            pet.BirthDate = dto.BirthDate;
-            pet.sex = dto.sex;
-            pet.WeightKg = (dto.WeightKg != null ? dto.WeightKg : 0);
-
-
             _context.Pets.Update(pet);
             await _context.SaveChangesAsync();
             return pet;
