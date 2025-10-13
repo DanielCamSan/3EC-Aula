@@ -55,7 +55,7 @@ namespace FirstExam.Data
 
                 a.HasOne(a => a.Owner)
                   .WithMany(o => o.Appointments)
-                  .HasForeignKey(a => a.Id)
+                  .HasForeignKey(a => a.OwnerId)
                   .OnDelete(DeleteBehavior.Cascade);
             });
 

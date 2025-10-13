@@ -7,7 +7,7 @@ namespace FirstExam.Models
         public Guid Id { get; set; }
         [Required]
         public Guid PetId { get; set; }
-        public Guid OwnerID { get; set; }
+        public Guid OwnerId { get; set; }
         public Pet? Pet { get; set; }
 
         public DateTime ScheduledAt { get; set; } = DateTime.Now;
