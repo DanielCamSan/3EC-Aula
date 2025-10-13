@@ -4,7 +4,6 @@ using FirstExam.Models;
 public class Appointment
 {
     public Guid Id { get; set; }
-    public Guid PetId { get; set; }
 
     [Required]
     public DateTime ScheduledAt { get; set; } = DateTime.Now;
@@ -18,6 +17,10 @@ public class Appointment
 
     public Guid? OwnerId { get; set; }
 
+    public Pet? Pet { get; set; }
+    public Guid PetId { get; set; }
 
-  
+
+
+
 }
