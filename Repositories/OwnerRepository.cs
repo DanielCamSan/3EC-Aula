@@ -16,6 +16,8 @@ namespace FirstExam.Repositories
         public async Task Add(Owner owner)
         {
             await _context.Owners.AddAsync(owner);
+            //cambios
+            await _context.SaveChangesAsync();
         }
 
         public async Task Delete(Guid id)
@@ -24,6 +26,7 @@ namespace FirstExam.Repositories
             if (owner != null)
             {
                 _context.Owners.Remove(owner);
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -48,6 +51,7 @@ namespace FirstExam.Repositories
                 existing.Active = owner.Active;
 
                 _context.Owners.Update(existing);
+                await _context.SaveChangesAsync();
             }
         }
 
