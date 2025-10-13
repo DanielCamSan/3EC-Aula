@@ -44,6 +44,14 @@ namespace FirstExam.Data
                 a.Property(x => x.Reason).IsRequired().HasMaxLength(100);
                 a.Property(x => x.Status).IsRequired().HasMaxLength(100).HasDefaultValue("scheduled");
                 a.Property(x => x.ScheduledAt).IsRequired();
+                //entidad 
+                a.HasIndex(x => x.PetId);
+                a.HasIndex(x => x.ScheduledAt);
+
+                a.HasOne(x => x.Pet)
+                 .WithMany(p => p.Appointments)
+                 .HasForeignKey(x => x.PetId)
+                 .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Owner>()

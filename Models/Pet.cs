@@ -22,6 +22,7 @@ public class Pet
     public string sex { get; set; } = string.Empty; // macho | hembra
     [Range(0,500)]
     public decimal? WeightKg { get; set; }
+    public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
 }
 

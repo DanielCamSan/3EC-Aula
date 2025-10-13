@@ -1,16 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-public class Appointment
+namespace FirstExam.Models
 {
-    public Guid Id { get; set; }
-    public Guid PetId { get; set; }
-    public DateTime ScheduledAt { get; set; } = DateTime.Now;
+    public class Appointment
+    {
+        public Guid Id { get; set; }
+        [Required]
+        public Guid PetId { get; set; }
+        public Pet? Pet { get; set; }
 
-    [Required, StringLength(100)]
-    public string Reason { get; set; } = string.Empty;
+        public DateTime ScheduledAt { get; set; } = DateTime.Now;
 
-    [Required, StringLength(100)]
-    public string Status { get; set; } = "scheduled"; // scheduled|done|canceled (libre)
+        [Required, StringLength(100)]
+        public string Reason { get; set; } = string.Empty;
 
-    public string? Notes { get; set; }
+        [Required, StringLength(100)]
+        public string Status { get; set; } = "scheduled";
+
+        public string? Notes { get; set; }
+    }
 }
