@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using FirstExam.Models;
 public class Pet
 {
     [Required]
@@ -6,6 +8,9 @@ public class Pet
     [Required]
     public Guid OwnerId { get; set; } = Guid.NewGuid();
     [Required, StringLength(100)]
+
+    [ForeignKey("OwnerId")]
+    public Owner Owner { get; set; } = null!;
     public string Name { get; set; } = string.Empty;
     [Required, StringLength(100)]
     public string Species { get; set; } = string.Empty; // dog | cat | bird | reptile | other 
@@ -17,5 +22,6 @@ public class Pet
     public string sex { get; set; } = string.Empty; // macho | hembra
     [Range(0,500)]
     public decimal? WeightKg { get; set; }
+
 }
 
