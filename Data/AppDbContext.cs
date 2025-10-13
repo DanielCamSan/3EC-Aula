@@ -32,7 +32,13 @@ namespace FirstExam.Data
                 a.Property(x => x.ScheduledAt).IsRequired();
                 a.Property(x => x.Reason).IsRequired();
                 a.HasIndex(x => x.OwnerId);
+
+                a.HasOne(x => x.Pet)                      
+                 .WithMany(p => p.Appointments)           
+                 .HasForeignKey(x => x.PetId)            
+                 .OnDelete(DeleteBehavior.Restrict);      
             });
+
             modelBuilder.Entity<Pet>(b =>
             {
                 b.HasKey(x => x.Id);
@@ -41,9 +47,14 @@ namespace FirstExam.Data
                 b.Property(x => x.Species);
                 b.Property(x => x.Breed);
                 b.Property(x => x.BirthDate);
-                b.Property(x => x.sex);
+                b.Property(x => x.Sex);
                 b.Property(x => x.WeightKg);
                 b.HasOne<Owner>().WithOne().HasForeignKey<Pet>(x => x.OwnerId).OnDelete(DeleteBehavior.Restrict);
+
+                b.HasMany(p => p.Appointments)           
+                 .WithOne(a => a.Pet)                   
+                 .HasForeignKey(a => a.PetId)            
+                 .OnDelete(DeleteBehavior.Restrict);      
             });
         }
     }
