@@ -20,7 +20,7 @@ public class Pet
     public decimal? WeightKg { get; set; }
     public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
-    public ICollection<Owner> Owner { get; set; } = new List<Owner>();
+    public Owner Owner { get; set; } = new Owner();
     
 
 }

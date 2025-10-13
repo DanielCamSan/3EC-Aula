@@ -55,8 +55,8 @@ namespace FirstExam.Data
                  .WithOne(a => a.Pet)
                  .HasForeignKey(a => a.PetId)
                  .OnDelete(DeleteBehavior.Restrict);
-                b.HasOne(p => p.Owners) 
-                    .WithMany() 
+                 b.HasOne(p => p.Owner)                
+                    .WithMany(o => o.Pets)             
                     .HasForeignKey(p => p.OwnerId)
                     .OnDelete(DeleteBehavior.Restrict);
  

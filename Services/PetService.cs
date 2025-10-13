@@ -62,7 +62,7 @@ namespace FirstExam.Services
                 p.Id,
                 p.Name,
                 p.Appointments?.Count() ?? 0,
-                p.Owners?.Count() ?? 0
+                p.Owner != null ? 1 : 0
             ));
         }
 
@@ -70,7 +70,7 @@ namespace FirstExam.Services
         {
             var pet = await _repo.GetByIdWithOwners(id);
             if (pet == null) return null;
-            var pets =(pet.Owners ?? new List<Owner>())
+            var pets = (pet.Owner != null ? new List<Owner> { pet.Owner } : new List<Owner>())
                 .Select(o => new OwnerListsDto(
                     o.Id,
                     o.FullName,
@@ -108,16 +108,18 @@ namespace FirstExam.Services
             current.Sex = dto.Sex;
             current.OwnerId = dto.OwnerId;
             await _repo.Update(id, dto);
-            var pets = (current.Owners ?? new List<Owner>())
-                .OrderBy(o => o.FullName)
-                .Select(o => new OwnerListsDto(
-                    o.Id,
-                    o.FullName,
-                    o.Email,
-                    o.Phone,
-                    o.Active,
-                    o.Appointments?.Count() ?? 0
-                )).ToList();
+            var pets = new List<OwnerListsDto>();
+            if (current.Owner != null)
+            {
+                pets.Add(new OwnerListsDto(
+                    current.Owner.Id,
+                    current.Owner.FullName,
+                    current.Owner.Email,
+                    current.Owner.Phone,
+                    current.Owner.Active,
+                    current.Owner.Appointments?.Count() ?? 0
+                ));
+            }
             return new PetsDetailsDto(
                 current.Id,
                 current.Name,

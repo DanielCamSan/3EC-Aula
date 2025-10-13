@@ -114,13 +114,13 @@ namespace FirstExam.Repositories
         {
             return await _context.Pets
                 .AsNoTracking()
-                .Include(p => p.Owners)
+                .Include(p => p.Owner)
                 .ToListAsync();
         }
 
         Task<Pet?> IPetRepository.GetByIdWithOwners(Guid id)
         {
-            return _context.Pets.AsNoTracking().Include(p => p.Owners).FirstOrDefaultAsync(p => p.Id == id);
+            return _context.Pets.AsNoTracking().Include(p => p.Owner).FirstOrDefaultAsync(p => p.Id == id);
         }
     }
 }
