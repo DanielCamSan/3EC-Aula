@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using FirstExam.Models;
 
 namespace FirstExam.Data
@@ -14,6 +14,19 @@ namespace FirstExam.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Owner>(b =>
+            {
+                b.HasKey(x => x.Id);
+                b.Property(x => x.Email).IsRequired();
+                b.Property(x => x.FullName).IsRequired().HasMaxLength(200); ;
+                b.Property(x => x.Phone).IsRequired().HasMaxLength(100); ;
+                b.Property(x => x.Active);
+
+                b.HasOne(o => o.Pet)
+                    .WithOne(p => p.Owner)
+                    .HasForeignKey<Pet>(p => p.OwnerId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
             modelBuilder.Entity<Pet>(b =>
             {
                 b.HasKey(x => x.Id);
@@ -22,35 +35,30 @@ namespace FirstExam.Data
                 b.Property(x => x.Species).IsRequired().HasMaxLength(100);
                 b.Property(x => x.Breed).IsRequired().HasMaxLength(100);
                 b.Property(x => x.BirthDate).IsRequired();
-                b.Property(x => x.sex).IsRequired().HasMaxLength(20);
+                b.Property(x => x.Sex).IsRequired().HasMaxLength(20);
                 b.Property(x => x.WeightKg);
 
-                b.HasOne<Owner>()
-                 .WithMany()
-                 .HasForeignKey(p => p.OwnerId)
-                 .IsRequired();
+                b.HasMany(p => p.Appointments)
+                    .WithOne(a => a.Pet)
+                    .HasForeignKey(a => a.PetId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
-            modelBuilder.Entity<Owner>(b =>
-            {
-                b.HasKey(x => x.Id);
-                b.Property(x => x.Email).IsRequired();
-                b.Property(x => x.FullName).IsRequired().HasMaxLength(200); ;
-                b.Property(x => x.Phone).IsRequired().HasMaxLength(100); ;
-                b.Property(x => x.Active);
-            });
+
             modelBuilder.Entity<Appointment>(b =>
             {
                 b.HasKey(x => x.Id);
-                b.Property(x => x.PetId);
-                b.Property(x => x.ScheduledAt);
+
+                b.Property(x => x.OwnerId).IsRequired();
+                b.Property(x => x.PetId).IsRequired();
+                b.Property(x => x.ScheduledAt).IsRequired();
                 b.Property(x => x.Reason).IsRequired().HasMaxLength(100); ;
                 b.Property(x => x.Status).IsRequired().HasMaxLength(100); ;
                 b.Property(x => x.Notes);
 
-                b.HasOne<Pet>()
-                   .WithMany()
-                   .HasForeignKey(a => a.PetId)
-                   .IsRequired();
+                b.HasOne(a => a.Owner)
+                    .WithMany(o => o.Appointments)
+                    .HasForeignKey(a => a.OwnerId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }
