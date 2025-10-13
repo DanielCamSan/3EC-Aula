@@ -1,35 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
-public class Appointment
+namespace FirstExam.Models
 {
-    public Guid Id { get; set; }
-    public Guid PetId { get; set; }
-    public DateTime ScheduledAt { get; set; } = DateTime.Now;
-    [Required, StringLength(100)]
-    public string Reason { get; set; } = string.Empty;
-    [Required, StringLength(100)]
-    public string Status { get; set; } = "scheduled";
-    public string? Notes { get; set; }
-
-    public record CreateAppointmentDto
+    public class Appointment
     {
-        public Guid PetId { get; init; }
-        public DateTime ScheduledAt { get; init; }
-        [Required, StringLength(100)]
-        public string Reason { get; init; }
-        [Required, StringLength(100)]
-        public string Status { get; init; }
-        public string? Notes { get; init; }
-    }
-
-    public record UpdateAppointmentDto
-    {
+        public Guid Id { get; set; }
         public Guid PetId { get; set; }
-        public DateTime ScheduledAt { get; set; }
+        public Guid OwnerId { get; set; }
+        public DateTime ScheduledAt { get; set; } = DateTime.Now;
+
         [Required, StringLength(100)]
-        public string Reason { get; set; }
+        public string Reason { get; set; } = string.Empty;
+
         [Required, StringLength(100)]
-        public string Status { get; set; }
+        public string Status { get; set; } = "scheduled";
         public string? Notes { get; set; }
+
+        public Pet? Pet { get; set; }
+        public Owner? Owner { get; set; }
     }
 }
