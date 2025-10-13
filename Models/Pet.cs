@@ -11,7 +11,8 @@ namespace FirstExam.Models
         public string Breed { get; set; } = string.Empty;
         public DateTime BirthDate { get; set; }
         public string sex { get; set; } = string.Empty;
-
         public decimal? WeightKg { get; set; }
+        public Owner? Owner { get; set; }
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }
