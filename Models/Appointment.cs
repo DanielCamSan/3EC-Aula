@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FirstExam.Models;
+using System.ComponentModel.DataAnnotations;
 
 public class Appointment
 {
@@ -10,4 +11,7 @@ public class Appointment
     [Required, StringLength(100)]
     public string Status { get; set; } = "scheduled";
     public string? Notes { get; set; }
+    public Pet? Pet { get; set; }
+    public Owner? Owner { get; set; }
+    public Guid OwnerId { get; set; }
 }

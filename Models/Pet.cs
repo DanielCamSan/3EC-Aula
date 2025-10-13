@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FirstExam.Models;
+using System.ComponentModel.DataAnnotations;
 public class Pet
 {
     [Required]
@@ -17,4 +18,7 @@ public class Pet
     public string sex { get; set; } = string.Empty; // macho | hembra
     [Range(0,500)]
     public decimal? WeightKg { get; set; }
+
+    public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+    public Owner? Owner { get; set; }
 }

@@ -4,12 +4,14 @@ namespace FirstExam.Models.dtos
 {
     public class CreateAppointmentDto
     {
+        [Required]
         public Guid PetId { get; init; }
+        [Required]
         public DateTime ScheduledAt { get; init; }
         [Required, StringLength(100)]
-        public string Reason { get; init; }
+        public string Reason { get; init; } = string.Empty;
         [Required, StringLength(100)]
-        public string Status { get; init; }
+        public string Status { get; init; } 
         public string? Notes { get; init; }
     }
 }
