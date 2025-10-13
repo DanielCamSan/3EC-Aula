@@ -107,7 +107,7 @@ namespace FirstExam.Services
             current.WeightKg = dto.WeightKg;
             current.Sex = dto.Sex;
             current.OwnerId = dto.OwnerId;
-            await _repo.Update(current);
+            await _repo.Update(id, dto);
             var pets = (current.Owners ?? new List<Owner>())
                 .OrderBy(o => o.FullName)
                 .Select(o => new OwnerListsDto(

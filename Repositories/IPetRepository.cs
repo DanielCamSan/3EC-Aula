@@ -18,5 +18,10 @@ namespace FirstExam.Repositories
         Task<bool> ExistsByNameExcludingId(string name, Guid excludeId);
 
         Task<List<Pet>> GetAllWithAppointments();
+
+        Task<List<Pet>> GetAllWithOwners();
+
+        Task<Pet?> GetByIdWithOwners(Guid id);
+        Task Update(Pet current);
     }
 }

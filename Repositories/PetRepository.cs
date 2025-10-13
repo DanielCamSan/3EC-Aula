@@ -21,13 +21,7 @@ namespace FirstExam.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Pet?> GetByIdWithOwner(Guid id)
-        {
-            return await _context.Pets
-                .AsNoTracking()
-                .Include(p => p.OwnerId)
-                .FirstOrDefaultAsync(p => p.Id == id);
-        }
+        
 
         public async Task<IEnumerable<Pet>> GetAll()
         {
@@ -115,6 +109,18 @@ namespace FirstExam.Repositories
         {
             return _context.Pets.AsNoTracking().Include(o => o.Appointments).ToListAsync();
 
+        }
+        public async Task<List<Pet>> GetAllWithOwners()
+        {
+            return await _context.Pets
+                .AsNoTracking()
+                .Include(p => p.Owners)
+                .ToListAsync();
+        }
+
+        Task<Pet?> IPetRepository.GetByIdWithOwners(Guid id)
+        {
+            return _context.Pets.AsNoTracking().Include(p => p.Owners).FirstOrDefaultAsync(p => p.Id == id);
         }
     }
 }
