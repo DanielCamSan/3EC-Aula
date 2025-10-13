@@ -25,10 +25,11 @@ namespace FirstExam.Data
                 b.Property(x => x.sex).IsRequired().HasMaxLength(20);
                 b.Property(x => x.WeightKg);
 
-                b.HasOne<Owner>()
-                 .WithMany()
-                 .HasForeignKey(p => p.OwnerId)
+                b.HasOne(p => p.Owner)
+                 .WithOne(o => o.Pet)
+                 .HasForeignKey<Pet>(p => p.OwnerId)
                  .IsRequired();
+
             });
             modelBuilder.Entity<Owner>(b =>
             {
@@ -37,6 +38,11 @@ namespace FirstExam.Data
                 b.Property(x => x.FullName).IsRequired().HasMaxLength(200); ;
                 b.Property(x => x.Phone).IsRequired().HasMaxLength(100); ;
                 b.Property(x => x.Active);
+
+                b.HasOne(o => o.Pet)
+                 .WithOne(p => p.Owner)
+                 .HasForeignKey<Pet>(p => p.OwnerId)
+                 .IsRequired();
             });
             modelBuilder.Entity<Appointment>(b =>
             {
@@ -47,10 +53,15 @@ namespace FirstExam.Data
                 b.Property(x => x.Status).IsRequired().HasMaxLength(100); ;
                 b.Property(x => x.Notes);
 
-                b.HasOne<Pet>()
-                   .WithMany()
-                   .HasForeignKey(a => a.PetId)
-                   .IsRequired();
+                b.HasOne(a => a.Pet)
+                 .WithMany(p => p.Appointments)
+                 .HasForeignKey(a => a.PetId)
+                 .IsRequired();
+
+                b.HasOne(a => a.Owner) 
+                .WithMany(o => o.Appointments) //Relación N:1 con Owner
+                .HasForeignKey(a => a.OwnerId)
+                .IsRequired();
             });
         }
     }
