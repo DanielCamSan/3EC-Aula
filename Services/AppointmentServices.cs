@@ -7,10 +7,13 @@ namespace FirstExam.Services
     {
         private readonly IAppointmentRepository _repo;
         private readonly IOwnerRepository _ownerRepo;
-        public AppointmentServices(IAppointmentRepository repo, IOwnerRepository owners)
+
+        private readonly IPetRepository _petRepo;
+        public AppointmentServices(IAppointmentRepository repo, IOwnerRepository owners, IPetRepository pets)
         {
             _repo = repo;
             _ownerRepo = owners;
+            _petRepo = pets;
         }
         public async Task<Appointment> Create(CreateAppointmentDto dto)
         {
@@ -22,6 +25,11 @@ namespace FirstExam.Services
             if (ownerExists == null)
             {
                 throw new InvalidOperationException("Owner does not exist.");
+            }
+            var petExists = await _petRepo.GetById(dto.PetId);
+            if (petExists == null)
+            {
+                throw new InvalidOperationException("Pet does not exist.");
             }
             var appointment = new Appointment
             {
