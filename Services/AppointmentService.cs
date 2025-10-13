@@ -25,6 +25,7 @@ namespace FirstExam.Services
             {
                 Id = Guid.NewGuid(),
                 PetId = dto.PetId,
+                OwnerId = dto.OwnerId,
                 ScheduledAt = dto.ScheduledAt,
                 Reason = dto.Reason.Trim(),
                 Status = dto.Status.Trim(),
@@ -43,6 +44,7 @@ namespace FirstExam.Services
             if (string.IsNullOrWhiteSpace(dto.Status)) throw new InvalidOperationException("Status is required.");
 
             existing.PetId = dto.PetId;
+            existing.OwnerId = dto.OwnerId;
             existing.ScheduledAt = dto.ScheduledAt;
             existing.Reason = dto.Reason.Trim();
             existing.Status = dto.Status.Trim();
