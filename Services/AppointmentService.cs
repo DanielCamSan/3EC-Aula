@@ -1,9 +1,9 @@
-﻿using FirstExam.Services;
-using FirstExam.Models;
-using FirstExam.Repositories;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
+using FirstExam.Models;
+using FirstExam.Models.DTO;
+using FirstExam.Repositories;
 
 namespace FirstExam.Services
 {
@@ -12,50 +12,50 @@ namespace FirstExam.Services
         private readonly IAppointmentRepository _repo;
         public AppointmentService(IAppointmentRepository repo) { _repo = repo; }
 
-        public IEnumerable<Appointment> List(string? sort, string? order, int page, int limit, out int total)
-        {
-            var data = _repo.Query();
+        public Task<IEnumerable<Appointment>> GetAll() => _repo.GetAll();
+        public Task<Appointment?> GetById(Guid id) => _repo.GetById(id);
 
-            // Ordenamiento: sort = scheduledAt|reason|status|petId
-            bool desc = string.Equals(order, "desc", StringComparison.OrdinalIgnoreCase);
-            data = (sort?.ToLower()) switch
+        public async Task<Appointment> Create(CreateAppointmentDto dto)
+        {
+            if (dto.ScheduledAt == default) throw new InvalidOperationException("ScheduledAt is required.");
+            if (string.IsNullOrWhiteSpace(dto.Reason)) throw new InvalidOperationException("Reason is required.");
+            if (string.IsNullOrWhiteSpace(dto.Status)) throw new InvalidOperationException("Status is required.");
+
+            var a = new Appointment
             {
-                "scheduledat" => desc ? data.OrderByDescending(x => x.ScheduledAt) : data.OrderBy(x => x.ScheduledAt),
-                "reason" => desc ? data.OrderByDescending(x => x.Reason) : data.OrderBy(x => x.Reason),
-                "status" => desc ? data.OrderByDescending(x => x.Status) : data.OrderBy(x => x.Status),
-                "petid" => desc ? data.OrderByDescending(x => x.PetId) : data.OrderBy(x => x.PetId),
-                _ => desc ? data.OrderByDescending(x => x.Id) : data.OrderBy(x => x.Id)
+                Id = Guid.NewGuid(),
+                PetId = dto.PetId,
+                ScheduledAt = dto.ScheduledAt,
+                Reason = dto.Reason.Trim(),
+                Status = dto.Status.Trim(),
+                Notes = dto.Notes?.Trim()
             };
-
-            total = data.Count();
-            page = Math.Max(1, page);
-            limit = Math.Clamp(limit, 1, 100);
-
-            return data.Skip((page - 1) * limit).Take(limit);
+            await _repo.Add(a);
+            return a;
         }
 
-        public Appointment? Get(Guid id) => _repo.Get(id);
-
-        public Appointment Create(Appointment model)
+        public async Task<bool> Update(Guid id, UpdateAppointmentDto dto)
         {
-            _repo.Add(model);
-            return model;
+            var existing = await _repo.GetById(id);
+            if (existing is null) return false;
+
+            if (string.IsNullOrWhiteSpace(dto.Reason)) throw new InvalidOperationException("Reason is required.");
+            if (string.IsNullOrWhiteSpace(dto.Status)) throw new InvalidOperationException("Status is required.");
+
+            existing.PetId = dto.PetId;
+            existing.ScheduledAt = dto.ScheduledAt;
+            existing.Reason = dto.Reason.Trim();
+            existing.Status = dto.Status.Trim();
+            existing.Notes = dto.Notes?.Trim();
+
+            return await _repo.Update(existing);
         }
 
-        public bool Update(Guid id, Appointment updated)
+        public async Task<bool> Delete(Guid id)
         {
-            var current = _repo.Get(id);
-            if (current is null) return false;
-
-            current.PetId = updated.PetId;
-            current.ScheduledAt = updated.ScheduledAt;
-            current.Reason = updated.Reason;
-            current.Status = updated.Status;
-            current.Notes = updated.Notes;
-
-            return _repo.Update(current);
+            var existing = await _repo.GetById(id);
+            if (existing is null) return false;
+            return await _repo.Delete(id);
         }
-
-        public bool Delete(Guid id) => _repo.Delete(id);
     }
 }
