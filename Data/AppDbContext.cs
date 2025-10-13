@@ -1,8 +1,5 @@
-﻿
-using System.Security.Cryptography.X509Certificates;
-using FirstExam.Controllers;
+﻿using Microsoft.EntityFrameworkCore;
 using FirstExam.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace FirstExam.Data
 {
@@ -10,50 +7,51 @@ namespace FirstExam.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-
         }
-
-        public DbSet<Appointment> Appointments => Set<Appointment>();
-        public DbSet<Owner> Owners => Set<Owner>();
         public DbSet<Pet> Pets => Set<Pet>();
-
+        public DbSet<Owner> Owners => Set<Owner>();
+        public DbSet<Appointment> Appointments => Set<Appointment>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Appointment>(a =>
+            modelBuilder.Entity<Pet>(b =>
             {
-                a.HasKey(x => x.Id);
-                a.Property(x => x.PetId);
-                a.Property(x => x.ScheduledAt);
-                a.Property(x => x.Reason).IsRequired().HasMaxLength(100);
-                a.Property(x => x.Status).IsRequired().HasMaxLength(100);
-                a.Property(x => x.Notes);
-            });
+                b.HasKey(x => x.Id);
+                b.Property(x => x.OwnerId).IsRequired();
+                b.Property(x => x.Name).IsRequired().HasMaxLength(100);
+                b.Property(x => x.Species).IsRequired().HasMaxLength(100);
+                b.Property(x => x.Breed).IsRequired().HasMaxLength(100);
+                b.Property(x => x.BirthDate).IsRequired();
+                b.Property(x => x.sex).IsRequired().HasMaxLength(20);
+                b.Property(x => x.WeightKg);
 
-            modelBuilder.Entity<Owner>(o =>
+                b.HasOne<Owner>()
+                 .WithMany()
+                 .HasForeignKey(p => p.OwnerId)
+                 .IsRequired();
+            });
+            modelBuilder.Entity<Owner>(b =>
             {
-                o.HasKey(x => x.Id);
-                o.Property(x => x.Email).IsRequired();
-                o.Property(x => x.FullName).IsRequired().HasMaxLength(200);
-                o.Property(x => x.Phone).IsRequired().HasMaxLength(7);
-                o.Property(x => x.Active);
-
-                
+                b.HasKey(x => x.Id);
+                b.Property(x => x.Email).IsRequired();
+                b.Property(x => x.FullName).IsRequired().HasMaxLength(200); ;
+                b.Property(x => x.Phone).IsRequired().HasMaxLength(100); ;
+                b.Property(x => x.Active);
             });
-
-            modelBuilder.Entity<Pet>(p =>
+            modelBuilder.Entity<Appointment>(b =>
             {
-                p.HasKey(x => x.Id);
-                p.Property(x => x.OwnerId).IsRequired();
-                p.Property(x => x.Name).IsRequired().HasMaxLength(100);
-                p.Property(x => x.Species).IsRequired().HasMaxLength(100);
-                p.Property(x => x.Breed).IsRequired().HasMaxLength(100);
-                p.Property(x => x.BirthDate).IsRequired();
-                p.Property(x => x.sex).IsRequired().HasMaxLength(20);
-                p.Property(x => x.WeightKg);
-            });
+                b.HasKey(x => x.Id);
+                b.Property(x => x.PetId);
+                b.Property(x => x.ScheduledAt);
+                b.Property(x => x.Reason).IsRequired().HasMaxLength(100); ;
+                b.Property(x => x.Status).IsRequired().HasMaxLength(100); ;
+                b.Property(x => x.Notes);
 
+                b.HasOne<Pet>()
+                   .WithMany()
+                   .HasForeignKey(a => a.PetId)
+                   .IsRequired();
+            });
         }
-
     }
 }
