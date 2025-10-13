@@ -32,6 +32,7 @@ namespace FirstExam.Data
                 a.Property(x => x.ScheduledAt).IsRequired();
                 a.Property(x => x.Reason).IsRequired();
                 a.HasIndex(x => x.OwnerId);
+                a.HasOne<Owner>().WithMany(o => o.Appointments).HasForeignKey(x => x.OwnerId).OnDelete(DeleteBehavior.Restrict);
             });
             modelBuilder.Entity<Pet>(b =>
             {
