@@ -35,7 +35,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Configuración de Entity Framework para PostgreSQL (igual que tu docente)
+// Configuración de Entity Framework para PostgreSQL 
 builder.Services.AddDbContext<FirstExam.Data.AppDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
