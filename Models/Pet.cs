@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using FirstExam.Models;
 public class Pet
 {
     [Required]
@@ -19,6 +20,7 @@ public class Pet
     public decimal? WeightKg { get; set; }
     public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
-
+    public ICollection<Owner> Owners { get; set; } = new List<Owner>();
+    
 
 }

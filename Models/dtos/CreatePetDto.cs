@@ -26,7 +26,8 @@ namespace FirstExam.Models.Dtos
     public record PetsListDto(
         Guid Id,
         string Name,
-        int AppointmentsCount
+        int AppointmentsCount,
+        int OwnersCount
     );
     public record PetsDetailsDto(
         Guid Id,
@@ -36,7 +37,8 @@ namespace FirstExam.Models.Dtos
         DateTime BirthDate,
         decimal? WeightKg,
         string Sex,
-        List<Appointment1ListDto> Appointments
+        List<Appointment1ListDto> Appointments,
+        List<OwnerListDto> Owners
     );
     
     public record Appointment1ListDto(
@@ -45,5 +47,14 @@ namespace FirstExam.Models.Dtos
         string Status,
         string? Notes,
         Guid id
-        );
+    );
+    public record OwnerListsDto(
+        Guid Id,
+        string FullName,
+        string Email,
+        string Phone,
+        bool Active,
+        int AppointmentsCount
+    );
+    
 }
