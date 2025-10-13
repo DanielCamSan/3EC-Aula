@@ -38,21 +38,10 @@ namespace FirstExam.Repositories
             return await _context.Appointments.Include(a => a.Pet).Include(a => a.Owner).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Appointment?> Update(Guid id, UpdateAppointmentDto dto)
+        public async Task Update(Appointment a)
         {
-            var appointment = await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (appointment == null) return null;
-
-            appointment.PetId = dto.PetId;
-            appointment.ScheduledAt = dto.ScheduledAt;
-            appointment.Reason = dto.Reason;
-            appointment.Status = dto.Status;
-            appointment.Notes = dto.Notes != null ? dto.Notes : "";
-
-            _context.Appointments.Update(appointment);
+            _context.Appointments.Update(a);
             await _context.SaveChangesAsync();
-            return appointment;
         }
 
 

@@ -7,9 +7,11 @@ namespace FirstExam.Services
     public class OwnerService : IOwnerService
     {
         private readonly IOwnerRepository _repo;
-        public OwnerService(IOwnerRepository repo)
+        private readonly IPetRepository _petRepo;
+        public OwnerService(IOwnerRepository repo, IPetRepository petRepo)
         {
             _repo = repo;
+            _petRepo = petRepo;
         }
 
         public async Task<Owner> Create(CreateOwnerDto dto)
@@ -44,7 +46,14 @@ namespace FirstExam.Services
         }
         public async Task<Owner?> Update(Guid id, UpdateOwnerDto dto)
         {
-            var owner = await _repo.Update(id, dto);
+            var owner = await _repo.GetById(id);
+            if (owner == null) throw new Exception("Owner not found");
+
+            if (dto.Email != null) owner.Email = dto.Email;
+            if (dto.FullName != null) owner.FullName = dto.FullName;
+            if (dto.Phone != null) owner.Phone = dto.Phone;
+            if (dto.Active) owner.Active = dto.Active;
+            await _repo.Update(owner);
             return owner;
         }
     }

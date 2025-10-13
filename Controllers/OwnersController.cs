@@ -34,19 +34,10 @@ namespace FirstExam.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int? Page, [FromQuery] int? limit, [FromQuery] string? sort, [FromQuery] string? order, [FromQuery] string? Q)
+        public async Task<IActionResult> GetAll()
         {
 
-            var (p, l) = NormalizePage(Page, limit);
-            IEnumerable<Owner> query = await _service.GetAll();
-            if (!string.IsNullOrEmpty(Q))
-            {
-                query = query.Where(a => a.Email.Contains(Q, StringComparison.OrdinalIgnoreCase) || a.FullName.Contains(Q, StringComparison.OrdinalIgnoreCase));
-            }
-            query = OrderbyProp(query, sort, order);
-            var total = query.Count();
-            var data = query.Skip((p - 1) - l).Take(l).ToList();
-            return Ok(new { data, meta = new { Page = p, limit = l, total } });
+            return Ok(await _service.GetAll());
         }
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<Owner>> GetOne(Guid id)
@@ -56,14 +47,14 @@ namespace FirstExam.Controllers
 
         }
         [HttpPost]
-        public async Task<ActionResult<Owner>> Create([FromBody] CreateOwnerDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateOwnerDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
             var owner = await _service.Create(dto);
             return CreatedAtAction(nameof(GetOne), new { id = owner.Id }, owner);
         }
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult<Owner>> Update(Guid id, [FromBody] UpdateOwnerDto dto)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateOwnerDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
             var updated = await _service.Update(id, dto);
