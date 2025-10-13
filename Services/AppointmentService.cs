@@ -1,6 +1,6 @@
-﻿using FirstExam.Models.dtos;
+﻿using FirstExam.Models;
+using FirstExam.Models.dtos;
 using FirstExam.Repositories;
-
 namespace FirstExam.Services
 {
     public class AppointmentService : IAppointmentService
@@ -10,16 +10,17 @@ namespace FirstExam.Services
         {
             _repo = repo;
         }
+
         public async Task<Appointment> Create(CreateAppointmentDto dto)
         {
             var appointment = new Appointment
             {
                 Id = Guid.NewGuid(),
-                PetId = dto.PetId,
-                ScheduledAt = dto.ScheduledAt,
-                Reason = dto.Reason,
+                Reason = dto.Reason.Trim(),
                 Status = dto.Status,
-                Notes = dto.Notes
+                Notes = dto.Notes,
+                PetId = dto.PetId,
+                ScheduledAt = dto.ScheduledAt
             };
             await _repo.Add(appointment);
             return appointment;
@@ -27,12 +28,12 @@ namespace FirstExam.Services
 
         public async Task<bool> Delete(Guid id)
         {
-            var existing = _repo.GetById(id);
+            var existing = await _repo.GetById(id);
             if (existing == null) return false;
             await _repo.Delete(id);
             return true;
-        }
 
+        }
         public async Task<IEnumerable<Appointment>> GetAll()
         {
             return await _repo.GetAll();
@@ -44,17 +45,10 @@ namespace FirstExam.Services
             return await appointment;
         }
 
-        public async Task<Appointment> Update(Guid id, UpdateAppointmentDto dto)
+        public async Task<Appointment?> Update(Guid id, UpdateAppointmentDto appointment)
         {
-            var a = await _repo.GetById(id);
-            if (a == null) throw new Exception("Appointment not found");
-            a.PetId = dto.PetId;
-            a.ScheduledAt = dto.ScheduledAt;
-            a.Reason = dto.Reason;
-            a.Status = dto.Status;
-            a.Notes = dto.Notes;
-            await _repo.Update(a);
-            return a;
+            var _appointment = await _repo.Update(id, appointment);
+            return _appointment;
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace FirstExam.Models.dtos
 {
-    public record UpdateAppointmentDto
+    public class UpdateAppointmentDto
     {
         public Guid PetId { get; set; }
         public DateTime ScheduledAt { get; set; }
