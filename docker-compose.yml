@@ -1,0 +1,24 @@
+services:
+  db:
+    image: postgres:16
+    container_name: owners_pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ownersdb
+      POSTGRES_USER: owneruser
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - owners_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U owneruser -d ownersdb"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  owners_data:
+
+
+
