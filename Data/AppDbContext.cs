@@ -11,7 +11,8 @@ namespace FirstExam.Data
         }
 
         public DbSet<Appointment> Appointments => Set<Appointment>();
-        public DbSet<Owner> Owners => Set<Owner>(); 
+        public DbSet<Owner> Owners => Set<Owner>();
+        public DbSet<Pet> Pets => Set<Pet>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

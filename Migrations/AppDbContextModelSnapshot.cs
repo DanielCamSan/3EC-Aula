@@ -16,130 +16,127 @@ namespace FirstExam.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
-
-            modelBuilder.Entity("FirstExam.Models.Pet", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Breed")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Species")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal?>("WeightKg")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("sex")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Pets");
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Appointment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+            modelBuilder.Entity("FirstExam.Models.Pet", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
 
-                    b.Property<string>("Notes")
-                        .HasColumnType("text");
+                b.Property<Guid>("OwnerId")
+                    .HasColumnType("uuid");
 
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uuid");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
 
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                b.Property<string>("Species")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
 
-                    b.Property<DateTime>("ScheduledAt")
-                        .HasColumnType("timestamp with time zone");
+                b.Property<string>("Breed")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasDefaultValue("scheduled");
+                b.Property<DateTime>("BirthDate")
+                    .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                b.Property<string>("sex")
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .HasColumnType("character varying(20)");
 
-                    b.HasIndex("OwnerId");
+                b.Property<decimal?>("WeightKg")
+                    .HasColumnType("numeric");
 
-                    b.HasIndex("ScheduledAt");
+                b.HasKey("Id");
 
-                    b.HasIndex("Status");
+                b.ToTable("Pets");
+            });
 
-                    b.HasIndex("OwnerId", "ScheduledAt");
 
-                    b.ToTable("Appointments");
-                });
+            modelBuilder.Entity("FirstExam.Models.Appointment", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<Guid>("OwnerId")
+                    .HasColumnType("uuid");
+
+                b.Property<DateTime>("ScheduledAt")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<string>("Reason")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
+
+                b.Property<string>("Status")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasDefaultValue("scheduled")
+                    .HasColumnType("character varying(100)");
+
+                b.Property<string>("Notes")
+                    .HasColumnType("text");
+
+                b.HasKey("Id");
+
+                b.HasIndex("OwnerId");
+                b.HasIndex("ScheduledAt");
+                b.HasIndex("Status");
+                b.HasIndex("OwnerId", "ScheduledAt");
+
+                b.ToTable("Appointments");
+            });
 
             modelBuilder.Entity("FirstExam.Models.Owner", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
 
-                    b.Property<bool>("Active")
-                        .HasColumnType("boolean");
+                b.Property<string>("FullName")
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .HasColumnType("character varying(200)");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
+                b.Property<string>("Email")
+                    .IsRequired()
+                    .HasColumnType("text");
 
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                b.Property<string>("Phone")
+                    .IsRequired()
+                    .HasMaxLength(7)
+                    .HasColumnType("character varying(7)");
 
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(7)
-                        .HasColumnType("character varying(7)");
+                b.Property<bool>("Active")
+                    .HasColumnType("boolean");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Owner");
-                });
+                b.ToTable("Owners");
+            });
 
-            modelBuilder.Entity("Appointment", b =>
-                {
-                    b.HasOne("FirstExam.Models.Owner", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("FirstExam.Models.Appointment", b =>
+            {
+                b.HasOne("FirstExam.Models.Owner", "Owner")
+                    .WithMany()
+                    .HasForeignKey("OwnerId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Owner");
-                });
+                b.Navigation("Owner");
+            });
 #pragma warning restore 612, 618
         }
     }
