@@ -10,5 +10,6 @@ namespace FirstExam.Repositories
         Task Update(Owner owner);
         Task Delete(Guid id);
         Task<bool> EmailExists(string email, Guid? excludeId = null);
+        Task<bool> Exists(Guid id);
     }
 }

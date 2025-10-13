@@ -44,5 +44,12 @@ namespace FirstExam.Repositories
            _context.Appointments.Update(appointment);
             await _context.SaveChangesAsync();
         }
+        public async Task<List<Appointment>> GetWithDetails()
+        {
+            return await _context.Appointments
+                .Include(a => a.Pet)      // Incluir Pet
+                .Include(a => a.Owner)    // Incluir Owner
+                .ToListAsync();
+        }
     }
 }

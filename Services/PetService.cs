@@ -7,10 +7,18 @@ namespace FirstExam.Services
     public class PetService: IPetService
     {
         private readonly IPetRepository _repo;
-        public PetService(IPetRepository repo) => _repo = repo;
+        private readonly IOwnerService _ownerService;
+        public PetService(IPetRepository repo, IOwnerService ownerService)
+        {
+            _repo = repo;
+            _ownerService = ownerService;  // ← INYECTAR
+        }
 
         public async Task<Pet> Create(CreatePetDto dto)
         {
+            var ownerExists = await _ownerService.Exists(dto.OwnerId);
+            if (!ownerExists)
+                return null;
             var pet = new Pet { Id = Guid.NewGuid(),OwnerId = Guid.NewGuid(), Name = dto.Name.Trim(), 
                 Species = dto.Species.Trim(), Breed = dto.Breed , BirthDate = dto.BirthDate, sex = dto.sex, WeightKg = dto.WeightKg };
             await _repo.Add(pet);
@@ -45,5 +53,10 @@ namespace FirstExam.Services
         public Task<IEnumerable<Pet>> GetAll() => _repo.GetAll();
         public Task<Pet?> GetById(Guid id) => _repo.GetById(id);
 
+        public async Task<bool> Exists(Guid id)
+        {
+            var pet = await _repo.GetById(id);
+            return pet != null;
+        }
     }
 }

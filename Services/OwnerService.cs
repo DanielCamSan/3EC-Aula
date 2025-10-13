@@ -65,5 +65,9 @@ namespace FirstExam.Services
             await _repo.Delete(id);
             return true;
         }
+        public async Task<bool> Exists(Guid id)
+        {
+            return await _repo.Exists(id);
+        }
     }
 }

@@ -6,12 +6,25 @@ namespace FirstExam.Services
     public class AppointmentService : IAppointmentService
     {
         private readonly IAppointmentRepository _repository;
-        public AppointmentService(IAppointmentRepository repository)
+        private readonly IPetService _petService;
+        private readonly IOwnerService _ownerService;
+        public AppointmentService(IAppointmentRepository repository, IPetService petService,
+            IOwnerService ownerService)
         {
+            _petService = petService;
+            _ownerService = ownerService;
             _repository = repository;
         }
         public async Task<Appointment> Create(CreateAppointmentDto dto)
         {
+            var petExists = await _petService.Exists(dto.PetId);
+            if (!petExists)
+                return null;
+
+            // Validar que Owner existe
+            var ownerExists = await _ownerService.Exists(dto.OwnerId);
+            if (!ownerExists)
+                return null;
             var appointment = new Appointment
             {
                 Id = Guid.NewGuid(),
@@ -64,5 +77,6 @@ namespace FirstExam.Services
             return true;
 
         }
+        public Task<List<Appointment>> GetWithDetails() => _repository.GetWithDetails();
     }
 }

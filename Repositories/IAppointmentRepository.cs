@@ -7,6 +7,7 @@
         Task Add(Appointment appointment);
         Task Delete(Guid id);
         Task Update(Appointment appointment);
+        Task<List<Appointment>> GetWithDetails();
     }
 }
 

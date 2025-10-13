@@ -10,5 +10,6 @@ namespace FirstExam.Services
         Task<Owner> Create(CreateOwnerDto dto);
         Task<Owner?> Update(Guid id, UpdateOwnerDto dto);
         Task<bool> Delete(Guid id);
+        Task<bool> Exists(Guid id);
     }
 }

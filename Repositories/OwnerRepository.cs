@@ -50,5 +50,9 @@ namespace FirstExam.Repositories
             return await _context.Owners
                 .AnyAsync(x => x.Email == email && (excludeId == null || x.Id != excludeId));
         }
+        public async Task<bool> Exists(Guid id)
+        {
+            return await _context.Owners.AnyAsync(x => x.Id == id);
+        }
     }
 }

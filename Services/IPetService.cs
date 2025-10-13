@@ -9,6 +9,6 @@ namespace FirstExam.Services
         Task <Pet> Create(CreatePetDto dto);
         Task<Pet?> Update(Guid id, UpdatePetDto dto);
         Task<bool> Delete(Guid id);
-
+        Task<bool> Exists(Guid id);
     }
 }

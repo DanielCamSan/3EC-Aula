@@ -10,5 +10,6 @@ namespace FirstExam.Services
         Task<Appointment> Create(CreateAppointmentDto dto);
         Task<bool> Delete(Guid id);
         Task <bool> Update(Guid id, UpdateAppointmentDto dto);
+        Task<List<Appointment>> GetWithDetails();
     }
 }

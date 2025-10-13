@@ -32,11 +32,20 @@ namespace FirstExam.Controllers
                 : Ok(appointment);
         }
 
+        [HttpGet("with-details")]
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetWithDetails()
+        {
+            var appointments = await _service.GetWithDetails();
+            return Ok(appointments);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAppointmentDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
             var appointment = await _service.Create(dto);
+            if (appointment is null)
+                return BadRequest("Pet or Owner not found");
             return CreatedAtAction(nameof(GetOne), new { id = appointment.Id }, appointment);
         }
 
