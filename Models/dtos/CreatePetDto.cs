@@ -21,4 +21,27 @@ namespace apiwithdb.Models.dtos
         [Range(0, 500)]
         public decimal? WeightKg { get; set; }
     }
+    public record OwnerListDto(
+        Guid Id,
+        string Name,
+        int AppointmentsCount
+    );
+    public record OwnerDetailsDto(
+        Guid Id,
+        string Name,
+        string Species,
+        string Breed,
+        DateTime BirthDate,
+        decimal? WeightKg,
+        string sex,
+        List<AppointmentListDto> Appointments
+    );
+
+    public record AppointmentListDto(
+        Guid Id,
+        DateTime ScheduledAt,
+        string Reason,
+        string Status,
+        string? Notes
+    );
 }

@@ -4,7 +4,9 @@ namespace FirstExam.Models.dto
 {
     public class CreateAppointmentDto
     {      
-        public Guid PetId { get; init; }
+
+        public Guid id { get; set; } = Guid.NewGuid();
+        public Guid PetId { get; init; } = Guid.NewGuid();
             public DateTime ScheduledAt { get; init; }
 
             [Required, StringLength(100)]
@@ -16,6 +18,8 @@ namespace FirstExam.Models.dto
 
         [Required]
         public Guid OwnerId { get; init; }
+
+        
 
     }
 }
