@@ -17,7 +17,7 @@ builder.Services.AddCors(
 
 // --- Añadir DbContext ---
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
 // --- Registrar Servicios y Repositorios ---
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();

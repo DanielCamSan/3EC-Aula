@@ -24,9 +24,9 @@ namespace FirstExam.Repositories
 
             if (owner == null) return null;
 
-            owner.Email = dto.Email.Trim();
-            owner.FullName = dto.FullName.Trim();
-            owner.Phone = dto.Phone;
+            owner.Email = dto.Email.Trim() ?? owner.Email;
+            owner.FullName = dto.FullName?.Trim() ?? owner.FullName;
+            owner.Phone = dto.Phone ?? owner.Phone;
             owner.Active = dto.Active;
 
 

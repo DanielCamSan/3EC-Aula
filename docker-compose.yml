@@ -18,7 +18,3 @@
                 retries: 18
     volumes:
         vets_data:
-    
-
-      
-        
