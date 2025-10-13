@@ -52,6 +52,11 @@ namespace FirstExam.Data
                  .WithMany(p => p.Appointments)
                  .HasForeignKey(x => x.PetId)
                  .OnDelete(DeleteBehavior.Cascade);
+
+                a.HasOne(a => a.Owner)
+                  .WithMany(o => o.Appointments)
+                  .HasForeignKey(a => a.Id)
+                  .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Owner>()
