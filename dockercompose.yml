@@ -1,21 +1,21 @@
 services:
   db:
     image: postgres:16
-    container_name: owners_pg
+    container_name: team03pg
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ownersdb
-      POSTGRES_USER: ownersuser
+      POSTGRES_DB: team03db
+      POSTGRES_USER: team03user
       POSTGRES_PASSWORD: supersecret
     ports:
       - "5432:5432"
     volumes:
-      - owners_data:/var/lib/postgresql/data
+      - team03_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ownersuser -d ownersdb"]
+      test: ["CMD-SHELL", "pg_isready -U team03user -d team03db"]
       interval: 5s
       timeout: 3s
       retries: 10
 
 volumes:
-  owners_data:
+  team03_data:
