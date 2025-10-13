@@ -1,21 +1,16 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FirstExam.Models.dtos
 {
     public record CreateOwnerDto
     {
-        [Required, EmailAddress]
-        public string Email { get; set; } = string.Empty;
-
+        public Guid Id { get; init; }
         [Required, StringLength(200)]
-        public string FullName { get; set; } = string.Empty;
-
-        [Required, StringLength(7, MinimumLength = 7)]
-        public string Phone { get; set; } = string.Empty;
-
-        public bool Active { get; set; } = true;
-
-        public string? Notes { get; set; } 
+        public string Email { get; init; }
+        [Required, StringLength(200)]
+        public string FullName { get; init; }
+        [Required, StringLength(maximumLength: 20, MinimumLength = 7)]
+        public string Phone { get; init; }
+        public bool Active { get; init; }
     }
 }

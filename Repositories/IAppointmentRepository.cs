@@ -1,5 +1,5 @@
-﻿using FirstExam.Models.dtos;
-
+﻿using FirstExam.Models;
+using FirstExam.Models.dtos;
 namespace FirstExam.Repositories
 {
     public interface IAppointmentRepository
@@ -8,6 +8,6 @@ namespace FirstExam.Repositories
         Task<Appointment?> GetById(Guid id);
         Task Add(Appointment appointment);
         Task Delete(Guid id);
-        Task Update(Appointment a);
+        Task<Appointment?> Update(Guid id, UpdateAppointmentDto appointment);
     }
 }

@@ -1,25 +1,29 @@
 ﻿using FirstExam.Models.dtos;
 using FirstExam.Repositories;
+using Microsoft.JSInterop.Infrastructure;
+
 namespace FirstExam.Services
 {
     public class PetService : IPetService
     {
         private readonly IPetRepository _repo;
+
         public PetService(IPetRepository repo)
         {
-            _repo= repo;
+            _repo = repo;
         }
         public async Task<Pet> Create(CreatePetDto dto)
         {
             var pet = new Pet
             {
-                Name = dto.Name,
-                BirthDate = dto.BirthDate,
-                Breed = dto.Breed,
-                sex = dto.sex,
+                Id = Guid.NewGuid(),
                 OwnerId = dto.OwnerId,
+                Name = dto.Name,
                 Species = dto.Species,
-                WeightKg = dto.WeightKg 
+                Breed = dto.Breed,
+                BirthDate = dto.BirthDate,
+                sex = dto.sex,
+                WeightKg = dto.WeightKg != null ? dto.WeightKg : 0,
             };
             await _repo.Add(pet);
             return pet;
@@ -44,19 +48,10 @@ namespace FirstExam.Services
             return pet;
         }
 
-        public async Task<Pet> Update(Guid id, UpdatePetDto dto)
+        public async Task<Pet?> Update(Guid id, UpdatePetDto dto)
         {
-            var a = await _repo.GetById(id);
-            if (a == null) throw new Exception("Pet not found ");
-            a.Name = dto.Name;
-            a.BirthDate = dto.BirthDate;
-            a.Breed = dto.Breed;
-            a.OwnerId = dto.OwnerId;
-            a.Species = dto.Species;
-            a.WeightKg = dto.WeightKg;
-            a.sex = dto.sex;
-            await _repo.Update(a);
-            return a;
+            var pet = await _repo.Update(id, dto);
+            return pet;
         }
     }
 }

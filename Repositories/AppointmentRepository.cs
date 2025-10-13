@@ -1,46 +1,60 @@
 ﻿using FirstExam.Data;
+using FirstExam.Models;
 using FirstExam.Models.dtos;
 using Microsoft.EntityFrameworkCore;
+using System;
+
 
 namespace FirstExam.Repositories
 {
     public class AppointmentRepository : IAppointmentRepository
     {
-        private AppDbContext _context;
-
+        private readonly AppDbContext _context;
         public AppointmentRepository(AppDbContext context)
         {
             _context = context;
         }
-
-        public async Task Add(Appointment book)
+        public async Task Add(Appointment appointment)
         {
-            await _context.Appointments.AddAsync(book);
+            await _context.AddAsync(appointment);
+            await _context.SaveChangesAsync();
         }
 
         public async Task Delete(Guid id)
         {
-            var book = await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
-            if (book != null)
+            var appointment = await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
+            if (appointment != null)
             {
-                _context.Appointments.Remove(book);
+                _context.Remove(appointment);
             }
+            await _context.SaveChangesAsync();
         }
-
         public async Task<IEnumerable<Appointment>> GetAll()
         {
             return await _context.Appointments.ToListAsync();
         }
-
         public async Task<Appointment?> GetById(Guid id)
         {
             return await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task Update(Appointment a)
+        public async Task<Appointment?> Update(Guid id, UpdateAppointmentDto dto)
         {
-            _context.Appointments.Update(a);
+            var appointment = await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (appointment == null) return null;
+
+            appointment.PetId = dto.PetId;
+            appointment.ScheduledAt = dto.ScheduledAt;
+            appointment.Reason = dto.Reason;
+            appointment.Status = dto.Status;
+            appointment.Notes = dto.Notes != null ? dto.Notes : "";
+
+            _context.Appointments.Update(appointment);
             await _context.SaveChangesAsync();
+            return appointment;
         }
+
+
     }
 }
