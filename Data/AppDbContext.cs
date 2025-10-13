@@ -34,7 +34,7 @@ namespace FirstExam.Data
                 p.Property(x => x.Breed).IsRequired().HasMaxLength(100);
                 p.Property(x => x.sex).IsRequired().HasMaxLength(20);
                 p.Property(x => x.BirthDate).IsRequired();
-                p.Property(x => x.WeightKg).HasPrecision(0, 500);
+                p.Property(x => x.WeightKg).HasPrecision(2, 5);
             });
 
 
