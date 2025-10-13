@@ -1,5 +1,4 @@
-﻿using FirstExam.Models;
-using FirstExam.Models.Dtos.Appointments;
+﻿using FirstExam.Models.Dtos.Appointments;
 using FirstExam.Repositories;
 
 namespace FirstExam.Services
@@ -12,61 +11,36 @@ namespace FirstExam.Services
             _repo = repo;
         }
 
-        public async Task<IEnumerable<AppointmentListDto>> GetAll()
+        public async Task<IEnumerable<Appointment>> GetAll()
         {
-            var list = await _repo.GetAll();
-            return list.OrderBy(a => a.ScheduledAt)
-                       .Select(a => new AppointmentListDto(
-                           a.Id,
-                           a.PetId,
-                           a.ScheduledAt,
-                           a.Reason,
-                           a.Status
-                       ));
+            return await _repo.GetAll();            
         }
 
-        public async Task<AppointmentDetailDto?> GetById(Guid id)
+        public async Task<Appointment?> GetById(Guid id)
         {
-            var a = await _repo.GetById(id);
-            return a is null ? null : new AppointmentDetailDto(
-                a.Id,
-                a.PetId,
-                a.ScheduledAt,
-                a.Reason,
-                a.Status,
-                a.Notes
-            );
+            return await _repo.GetById(id);
         }
 
-        public async Task<AppointmentDetailDto> Create(CreateAppointmentDto dto)
+        public async Task<Appointment> Create(CreateAppointmentDto dto)
         {
             var reason = dto.Reason.Trim();
-            if (await _repo.ExistsByReason(reason))
-                throw new InvalidOperationException("An appointment with this reason already exists.");
+            if(reason is null)
+                throw new InvalidOperationException("An appointment without Reason is indefined.");
 
             var appointment = new Appointment
             {
                 Id = Guid.NewGuid(),
-                PetId = dto.PetId,
+                PetId = Guid.NewGuid(),
                 ScheduledAt = dto.ScheduledAt,
                 Reason = reason,
                 Status = dto.Status.Trim(),
                 Notes = dto.Notes?.Trim()
             };
-
             await _repo.Add(appointment);
-
-            return new AppointmentDetailDto(
-                appointment.Id,
-                appointment.PetId,
-                appointment.ScheduledAt,
-                appointment.Reason,
-                appointment.Status,
-                appointment.Notes
-            );
+            return appointment; 
         }
 
-        public async Task<AppointmentDetailDto?> Update(Guid id, UpdateAppointmentDto dto)
+        public async Task<Appointment?> Update(Guid id, UpdateAppointmentDto dto)
         {
             var current = await _repo.GetById(id);
             if (current is null) return null;
@@ -82,15 +56,7 @@ namespace FirstExam.Services
             current.Notes = dto.Notes?.Trim();
 
             await _repo.Update(current);
-
-            return new AppointmentDetailDto(
-                current.Id,
-                current.PetId,
-                current.ScheduledAt,
-                current.Reason,
-                current.Status,
-                current.Notes
-            );
+            return current; 
         }
 
         public async Task<bool> Delete(Guid id)

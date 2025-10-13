@@ -1,11 +1,17 @@
 ﻿using FirstExam.Models.dtos;
+using FirstExam.Data; 
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstExam.Repositories
 {
     public class PetRepository : IPetRepository
     {
         private readonly AppDbContext _context;
+        public PetRepository(AppDbContext context)
+        {
+            _context = context; 
+        }
         public async Task Add(Pet pet)
         {
             await _context.Pets.AddAsync(pet);
@@ -40,7 +46,7 @@ namespace FirstExam.Repositories
 
             pet = new Pet
             {
-                OwnerId = dto.OwnerId,
+                OwnerId = id,
                 Name = dto.Name,
                 Species = dto.Species,
                 Breed = dto.Breed,

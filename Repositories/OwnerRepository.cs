@@ -1,4 +1,6 @@
 ﻿using FirstExam.Models;
+using FirstExam.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstExam.Repositories
 {
@@ -38,7 +40,7 @@ namespace FirstExam.Repositories
         public async Task Update(Owner owner)
         {
             _context.Owners.Update(owner);
-            await _context._SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }

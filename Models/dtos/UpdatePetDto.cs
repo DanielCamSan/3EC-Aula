@@ -4,8 +4,6 @@ namespace FirstExam.Models.dtos
 {
     public record UpdatePetDto
     {
-        [Required]
-        public required Guid OwnerId { get; set; }
         [Required, StringLength(100)]
         public required string Name { get; set; }
         [Required, StringLength(100)]

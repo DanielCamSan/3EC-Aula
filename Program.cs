@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore; 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(
@@ -8,6 +9,17 @@ builder.Services.AddCors(
             policy.WithOrigins("https://localhost:7162", "http://127.0.0.1:5500").AllowAnyMethod().AllowAnyHeader();
         });
     });
+builder.Services.AddDbContext<FirstExam.Data.AppDbContext>(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddScoped<FirstExam.Repositories.IAppointmentRepository, FirstExam.Repositories.AppointmentRepository>();
+builder.Services.AddScoped<FirstExam.Services.IAppointmentService, FirstExam.Services.AppointmentService>();
+
+builder.Services.AddScoped<FirstExam.Repositories.IOwnerRepository, FirstExam.Repositories.OwnerRepository>();
+builder.Services.AddScoped<FirstExam.Services.IOwnerService, FirstExam.Services.OwnerService>();
+
+builder.Services.AddScoped<FirstExam.Repositories.IPetRepository, FirstExam.Repositories.PetRepository>();
+builder.Services.AddScoped<FirstExam.Services.IPetService, FirstExam.Services.PetService>(); 
 var app = builder.Build();
 
 app.UseHttpsRedirection();

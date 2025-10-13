@@ -5,10 +5,10 @@ namespace FirstExam.Services
 {
     public interface IAppointmentService
     {
-        Task<IEnumerable<AppointmentListDto>> GetAll();
-        Task<AppointmentDetailDto?> GetById(Guid id);
-        Task<AppointmentDetailDto> Create(CreateAppointmentDto dto);
-        Task<AppointmentDetailDto?> Update(Guid id, UpdateAppointmentDto dto);
+        Task<IEnumerable<Appointment>> GetAll();
+        Task<Appointment?> GetById(Guid id);
+        Task<Appointment> Create(CreateAppointmentDto dto);
+        Task<Appointment?> Update(Guid id, UpdateAppointmentDto dto);
         Task<bool> Delete(Guid id);
     }
 }
