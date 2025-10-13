@@ -37,6 +37,8 @@ namespace FirstExam.Data
                  .WithMany(p => p.Appointments)           
                  .HasForeignKey(x => x.PetId)            
                  .OnDelete(DeleteBehavior.Restrict);      
+
+                a.HasOne<Owner>().WithMany(o => o.Appointments).HasForeignKey(x => x.OwnerId).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Pet>(b =>

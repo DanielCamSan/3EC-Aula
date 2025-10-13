@@ -42,5 +42,6 @@ namespace FirstExam.Repositories
             _context.Appointments.Update(appointment);
             await _context.SaveChangesAsync();
         }
+        
     }
 }

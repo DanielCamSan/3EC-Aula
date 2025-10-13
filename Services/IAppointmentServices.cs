@@ -9,7 +9,7 @@ namespace FirstExam.Services
         Task<Appointment?> GetById(Guid id);
         Task<Appointment> Create(CreateAppointmentDto dto);
         Task<bool> Delete(Guid id);
-
+            
         Task<Appointment?> Update(Guid id, UpdateAppointmentDto dto);
     }
 }
