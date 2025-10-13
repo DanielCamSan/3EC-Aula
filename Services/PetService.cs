@@ -1,7 +1,8 @@
-﻿using FirstExam.Models;
+﻿using System;
 using FirstExam.Models.Dtos;
 using FirstExam.Repositories;
 using System.Linq;
+using FirstExam.Models;
 
 namespace FirstExam.Services
 {
@@ -42,7 +43,8 @@ namespace FirstExam.Services
                 pet.BirthDate,
                 pet.WeightKg,
                 pet.Sex,
-                new List<Appointment1ListDto>() 
+                new List<Appointment1ListDto>(),
+                new List<OwnerListsDto>()
             );
         }
 
@@ -54,20 +56,29 @@ namespace FirstExam.Services
 
         public async Task<IEnumerable<PetsListDto>> GetAll()
         {
-            var pets = await _repo.GetAll();
+            var pets = await _repo.GetAllWithOwners();
 
             return pets.Select(p => new PetsListDto(
                 p.Id,
                 p.Name,
-                p.Appointments?.Count() ?? 0
+                p.Appointments?.Count() ?? 0,
+                p.Owners?.Count() ?? 0
             ));
         }
 
         public async Task<PetsDetailsDto?> GetById(Guid id)
         {
-            var pet = await _repo.GetById(id);
+            var pet = await _repo.GetByIdWithOwners(id);
             if (pet == null) return null;
-
+            var pets =(pet.Owners ?? new List<Owner>())
+                .Select(o => new OwnerListsDto(
+                    o.Id,
+                    o.FullName,
+                    o.Email,
+                    o.Phone,
+                    o.Active,
+                    o.Appointments?.Count() ?? 0
+                )).ToList();
             return new PetsDetailsDto(
                 pet.Id,
                 pet.Name,
@@ -76,24 +87,47 @@ namespace FirstExam.Services
                 pet.BirthDate,
                 pet.WeightKg,
                 pet.Sex,
-                new List<Appointment1ListDto>()
+                new List<Appointment1ListDto>(),
+                new List<OwnerListsDto>(pets)
             );
         }
 
         public async Task<PetsDetailsDto?> Update(Guid id, UpdatePetDto dto)
         {
-            var updated = await _repo.Update(id, dto);
-            if (updated == null) return null;
+            var current = await _repo.GetByIdWithOwners(id);
+            if (current == null) return null;
 
+            var name = dto.Name.Trim();
+            if (await _repo.ExistsByNameExcludingId(name, id))
+                throw new InvalidOperationException("Pet with the same name already exists");
+            current.Name = name;
+            current.Species = dto.Species;
+            current.Breed = dto.Breed;
+            current.BirthDate = dto.BirthDate;
+            current.WeightKg = dto.WeightKg;
+            current.Sex = dto.Sex;
+            current.OwnerId = dto.OwnerId;
+            await _repo.Update(current);
+            var pets = (current.Owners ?? new List<Owner>())
+                .OrderBy(o => o.FullName)
+                .Select(o => new OwnerListsDto(
+                    o.Id,
+                    o.FullName,
+                    o.Email,
+                    o.Phone,
+                    o.Active,
+                    o.Appointments?.Count() ?? 0
+                )).ToList();
             return new PetsDetailsDto(
-                updated.Id,
-                updated.Name,
-                updated.Species,
-                updated.Breed,
-                updated.BirthDate,
-                updated.WeightKg,
-                updated.Sex,
-                new List<Appointment1ListDto>()
+                current.Id,
+                current.Name,
+                current.Species,
+                current.Breed,
+                current.BirthDate,
+                current.WeightKg,
+                current.Sex,
+                new List<Appointment1ListDto>(),
+                new List<OwnerListsDto>(pets)
             );
         }
     }

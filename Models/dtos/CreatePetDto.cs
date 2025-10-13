@@ -38,7 +38,7 @@ namespace FirstExam.Models.Dtos
         decimal? WeightKg,
         string Sex,
         List<Appointment1ListDto> Appointments,
-        List<OwnerListDto> Owners
+        List<OwnerListsDto> Owners
     );
     
     public record Appointment1ListDto(
