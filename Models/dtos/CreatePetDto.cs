@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace apiwithdb.Models.dtos
+namespace FirstExam.Models.Dtos
 {
     public record CreatePetDto
     {
@@ -17,9 +17,11 @@ namespace apiwithdb.Models.dtos
         [Required]
         public DateTime BirthDate { get; set; }
         [Required, StringLength(20)]
-        public string sex { get; set; } = string.Empty;
+        public string Sex { get; set; } = string.Empty;
         [Range(0, 500)]
         public decimal? WeightKg { get; set; }
+
+
     }
     public record PetsListDto(
         Guid Id,
@@ -33,15 +35,15 @@ namespace apiwithdb.Models.dtos
         string Breed,
         DateTime BirthDate,
         decimal? WeightKg,
-        string sex,
-        List<AppointmentListDto> Appointments
+        string Sex,
+        List<Appointment1ListDto> Appointments
     );
-
-    public record AppointmentListDto(
-        Guid Id,
+    
+    public record Appointment1ListDto(
         DateTime ScheduledAt,
         string Reason,
         string Status,
-        string? Notes
-    );
+        string? Notes,
+        Guid id
+        );
 }

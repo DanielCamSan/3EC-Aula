@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FirstExam.Models.dto
+namespace FirstExam.Models.Dtos
 {
     public record UpdateAppointmentDto
     {
