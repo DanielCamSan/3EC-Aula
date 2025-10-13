@@ -51,11 +51,16 @@ namespace FirstExam.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
+                    b.Property<Guid?>("ownerId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
 
                     b.HasIndex("PetId");
+
+                    b.HasIndex("ownerId");
 
                     b.ToTable("Appointments");
                 });
@@ -90,8 +95,11 @@ namespace FirstExam.Migrations
 
             modelBuilder.Entity("Pet", b =>
                 {
-                    b.Property<Guid>("OwnerId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("AppointmentId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("BirthDate")
@@ -102,13 +110,18 @@ namespace FirstExam.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Sex")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Species")
                         .IsRequired()
@@ -118,27 +131,62 @@ namespace FirstExam.Migrations
                     b.Property<decimal?>("WeightKg")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("sex")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                    b.HasKey("Id");
 
-                    b.HasKey("OwnerId");
+                    b.HasIndex("AppointmentId");
+
+                    b.HasIndex("OwnerId")
+                        .IsUnique();
 
                     b.ToTable("Pets");
                 });
 
             modelBuilder.Entity("Appointment", b =>
                 {
-                    b.HasOne("FirstExam.Models.Owner", "owner")
+                    b.HasOne("FirstExam.Models.Owner", null)
                         .WithMany("Appointments")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Pet", "Pet")
+                        .WithMany("Appointments")
+                        .HasForeignKey("PetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FirstExam.Models.Owner", "owner")
+                        .WithMany()
+                        .HasForeignKey("ownerId");
+
+                    b.Navigation("Pet");
+
                     b.Navigation("owner");
                 });
 
+            modelBuilder.Entity("Pet", b =>
+                {
+                    b.HasOne("Appointment", null)
+                        .WithMany("Pets")
+                        .HasForeignKey("AppointmentId");
+
+                    b.HasOne("FirstExam.Models.Owner", null)
+                        .WithOne()
+                        .HasForeignKey("Pet", "OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Appointment", b =>
+                {
+                    b.Navigation("Pets");
+                });
+
             modelBuilder.Entity("FirstExam.Models.Owner", b =>
+                {
+                    b.Navigation("Appointments");
+                });
+
+            modelBuilder.Entity("Pet", b =>
                 {
                     b.Navigation("Appointments");
                 });
