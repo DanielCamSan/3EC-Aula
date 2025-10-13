@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FirstExam.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class OwnersController : ControllerBase
     {
         private readonly IOwnerService _service;

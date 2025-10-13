@@ -1,13 +1,12 @@
 ﻿using FirstExam.Models;
 using FirstExam.Models.dtos;
-using FirstExam.Models.DTOs;
 using FirstExam.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FirstExam.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentService _service;

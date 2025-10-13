@@ -1,6 +1,5 @@
 ﻿using FirstExam.Models;
 using FirstExam.Models.dtos;
-using FirstExam.Models.DTOs;
 
 namespace FirstExam.Services
 {
