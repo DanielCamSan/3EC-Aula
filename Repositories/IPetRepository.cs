@@ -6,7 +6,8 @@ namespace FirstExam.Repositories
     {
         Task<IEnumerable<Pet>> GetAll();
         Task<Pet?> GetById(Guid id);
-        Task Add(Pet book);
-        Task Delete(Guid id);
+        Task Add(Pet pet);
+        Task<bool> Delete(Guid id);
+        Task<Pet?> Update(Guid id, UpdatePetDto dto);
     }
 }
