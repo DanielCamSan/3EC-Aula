@@ -16,16 +16,9 @@ public class Appointment
     public Owner? owner { get; set; }
 
     public Guid? OwnerId { get; set; }
-
-<<<<<<< HEAD
     public Pet? Pet { get; set; }
     public Guid PetId { get; set; }
-
-
-=======
-   public Pet? pet { get; set; }
-public ICollection<Pet> Pets { get; set; } = new List<Pet>();
->>>>>>> d4b14ef4c366493bf224b086c58df291ef7a6f21
+    public ICollection<Pet> Pets { get; set; } = new List<Pet>();
 
 
 }
