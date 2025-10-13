@@ -20,4 +20,3 @@ namespace FirstExam.DTOs
         public decimal? WeightKg { get; init; }
     }
 }
-}

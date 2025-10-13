@@ -12,7 +12,6 @@ builder.Services.AddScoped<IPetRepository, PetRepository>();
 builder.Services.AddScoped<IPetService, PetService>();
 
 builder.Services.AddControllers();
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("MiPoliticaCors", policy =>
@@ -29,4 +28,5 @@ app.UseHttpsRedirection();
 app.UseCors("MiPoliticaCors");
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();
