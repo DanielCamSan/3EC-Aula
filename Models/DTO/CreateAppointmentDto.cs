@@ -3,17 +3,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FirstExam.Models.DTO
 {
-    public class CreateAppointmentDto
+    public record CreateAppointmentDto
     {
-        public Guid PetId { get; set; }
+        public Guid PetId { get; init; }
+        public DateTime ScheduledAt { get; init; }
 
-        [Required]
-        public DateTime ScheduledAt { get; set; }
+        [Required, StringLength(100)]
+        public string Reason { get; init; } = string.Empty;
 
-        [Required, MinLength(3)]
-        public string Reason { get; set; } = string.Empty;
+        [Required, StringLength(100)]
+        public string Status { get; init; } = "scheduled";
 
-        public string Status { get; set; } = "scheduled";
-        public string? Notes { get; set; }
+        public string? Notes { get; init; }
     }
 }
