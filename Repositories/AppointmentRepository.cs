@@ -31,11 +31,11 @@ namespace FirstExam.Repositories
         }
         public async Task<IEnumerable<Appointment>> GetAll()
         {
-            return await _context.Appointments.ToListAsync();
+            return await _context.Appointments.AsNoTracking().Include(a => a.Pet).Include(a => a.Owner).ToListAsync();
         }
         public async Task<Appointment?> GetById(Guid id)
         {
-            return await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Appointments.Include(a => a.Pet).Include(a => a.Owner).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Appointment?> Update(Guid id, UpdateAppointmentDto dto)

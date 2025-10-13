@@ -8,6 +8,6 @@ namespace FirstExam.Repositories
         Task<Appointment?> GetById(Guid id);
         Task Add(Appointment appointment);
         Task Delete(Guid id);
-        Task<Appointment?> Update(Guid id, UpdateAppointmentDto appointment);
+        Task Update(Appointment a);
     }
 }

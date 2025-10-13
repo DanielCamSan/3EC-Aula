@@ -35,16 +35,7 @@ namespace FirstExam.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] int? Page, [FromQuery] int? Limit, [FromQuery] string? Sort, [FromQuery] string? Order, [FromQuery] string? q)
         {
-            var (p, l) = NormalizePage(Page, Limit);
-            IEnumerable<Appointment> query = await _service.GetAll();
-            if (!string.IsNullOrWhiteSpace(q))
-            {
-                query = query.Where(a => a.Reason.Contains(q, StringComparison.OrdinalIgnoreCase));
-            }
-            query = OrderByProp(query, Sort, Order);
-            var total = query.Count();
-            var data = query.Skip((p - 1) * l).Take(l).ToList();
-            return Ok(new { data, meta = new { Page = p, Limit = l, total } });
+            return Ok(await _service.GetAll());
         }
 
         [HttpGet("{id:guid}")]
@@ -55,7 +46,7 @@ namespace FirstExam.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Appointment>> Create([FromBody] CreateAppointmentDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateAppointmentDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
             var appointment = await _service.Create(dto);
@@ -63,7 +54,7 @@ namespace FirstExam.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult<Appointment>> Update(Guid id, [FromBody] UpdateAppointmentDto dto)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateAppointmentDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
             var updated = await _service.Update(id, dto);
@@ -71,7 +62,7 @@ namespace FirstExam.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<ActionResult<Appointment>> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var removed = await _service.Delete(id);
             return !removed ? NotFound(new { error = "Appointment not found", status = 404 }) : NoContent();
