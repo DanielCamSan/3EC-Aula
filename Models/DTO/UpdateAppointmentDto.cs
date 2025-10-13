@@ -6,6 +6,8 @@ namespace FirstExam.Models.DTO
     public record UpdateAppointmentDto
     {
         public Guid PetId { get; set; }
+        [Required]
+        public Guid OwnerId { get; set; }
         public DateTime ScheduledAt { get; set; }
 
         [Required, StringLength(100)]
