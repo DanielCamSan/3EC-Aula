@@ -21,7 +21,6 @@ builder.Services.AddScoped<IPetRepository, PetRepository>();
 
 builder.Services.AddScoped<IPetService, PetService>();
 
-
 builder.Services.AddControllers();
 
 var app = builder.Build();
