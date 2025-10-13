@@ -10,7 +10,7 @@ namespace FirstExam.Repositories
         Task Add(Pet pet);
         Task<bool> Delete(Guid id);
         Task<Pet?> Update(Guid id, UpdatePetDto dto);
-        Task<bool> ExistByName(string name);
+        Task<bool> ExistsByName(string name);
         Task<bool> HasAppointments(Guid petId);
 
         Task<Pet?> GetByIdWithPet(Guid id);

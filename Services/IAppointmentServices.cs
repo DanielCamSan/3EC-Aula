@@ -1,5 +1,6 @@
 ﻿using FirstExam.Models.dto;
 
+using FirstExam.Models.Dtos;
 namespace FirstExam.Services
 {
     public interface IAppointmentServices

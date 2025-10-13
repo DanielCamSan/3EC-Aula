@@ -7,7 +7,7 @@ namespace FirstExam.Models.Dtos
         [Required]
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required]
-        public Guid OwnerId { get; set; } = Guid.NewGuid();
+        public Guid OwnerId { get; set; } 
         [Required, StringLength(100)]
         public string Name { get; set; } = string.Empty;
         [Required, StringLength(100)]

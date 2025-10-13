@@ -1,5 +1,4 @@
-﻿using FirstExam.Models.dto;
-using FirstExam.Models.Dtos;
+﻿using FirstExam.Models.Dtos;
 using FirstExam.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
