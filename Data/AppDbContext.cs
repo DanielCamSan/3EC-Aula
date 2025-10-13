@@ -8,9 +8,9 @@ namespace FirstExam.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<Owner> Owners => Set<Owner>();
-        public DbSet<Appointment> Appointments => Set<Appointment>();
-        public DbSet<Pet> Pets => Set<Pet>();
+        public DbSet<Owner> Owners { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Pet> Pets { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Owner>(o =>
