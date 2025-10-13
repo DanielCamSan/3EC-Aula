@@ -1,6 +1,7 @@
 ﻿using FirstExam.Models;
 using FirstExam.Models.Dtos;
 using FirstExam.Repositories;
+using System.Linq;
 
 namespace FirstExam.Services
 {
@@ -11,48 +12,89 @@ namespace FirstExam.Services
         {
             _repo = repo;
         }
-        public async Task<Pet> Create(CreatePetDto dto)
+
+        public async Task<PetsDetailsDto> Create(CreatePetDto dto)
         {
-            if (dto.OwnerId == null){
-                throw new InvalidOperationException("OwnerId no es valido");
-            }
-            var book = new Pet
+            var name = dto.Name.Trim();
+
+            if (await _repo.ExistsByName(name))
+                throw new InvalidOperationException("Pet with the same name already exists");
+
+            var pet = new Pet
             {
-                Id = Guid.NewGuid(),
+                Id = dto.Id,
+                Name = name,
                 Species = dto.Species,
-
-
-                
+                Breed = dto.Breed,
+                BirthDate = dto.BirthDate,
+                WeightKg = dto.WeightKg,
+                Sex = dto.Sex,
+                OwnerId = dto.OwnerId
             };
-            await _repo.Add(book);
-            return book;
+
+            await _repo.Add(pet);
+
+            return new PetsDetailsDto(
+                pet.Id,
+                pet.Name,
+                pet.Species,
+                pet.Breed,
+                pet.BirthDate,
+                pet.WeightKg,
+                pet.Sex,
+                new List<Appointment1ListDto>() 
+            );
         }
 
         public async Task<bool> Delete(Guid id)
         {
-            var existing = await _repo.GetById(id);
-            if (existing == null) return false;
-            await _repo.Delete(id);
-            return true;
+            if (await _repo.HasAppointments(id)) return false;
+            return await _repo.Delete(id);
         }
 
-        public async Task<IEnumerable<Pet>> GetAll()
+        public async Task<IEnumerable<PetsListDto>> GetAll()
         {
-            return await _repo.GetAll();
+            var pets = await _repo.GetAll();
+
+            return pets.Select(p => new PetsListDto(
+                p.Id,
+                p.Name,
+                p.Appointments?.Count() ?? 0
+            ));
         }
 
-        public async Task<Pet?> GetById(Guid id)
+        public async Task<PetsDetailsDto?> GetById(Guid id)
         {
-            var book = await _repo.GetById(id);
-            return book;
+            var pet = await _repo.GetById(id);
+            if (pet == null) return null;
+
+            return new PetsDetailsDto(
+                pet.Id,
+                pet.Name,
+                pet.Species,
+                pet.Breed,
+                pet.BirthDate,
+                pet.WeightKg,
+                pet.Sex,
+                new List<Appointment1ListDto>()
+            );
         }
-        public async Task<Pet?> Update(Guid id, UpdatePetDto dto)
+
+        public async Task<PetsDetailsDto?> Update(Guid id, UpdatePetDto dto)
         {
-            var existing = await _repo.GetById(id);
-            if (existing == null) return null;
+            var updated = await _repo.Update(id, dto);
+            if (updated == null) return null;
 
-            return await _repo.Update(id, dto);
+            return new PetsDetailsDto(
+                updated.Id,
+                updated.Name,
+                updated.Species,
+                updated.Breed,
+                updated.BirthDate,
+                updated.WeightKg,
+                updated.Sex,
+                new List<Appointment1ListDto>()
+            );
         }
-
     }
 }
