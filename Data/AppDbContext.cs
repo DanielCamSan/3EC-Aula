@@ -55,10 +55,11 @@ namespace FirstExam.Data
                  .WithOne(a => a.Pet)
                  .HasForeignKey(a => a.PetId)
                  .OnDelete(DeleteBehavior.Restrict);
-                b.HasOne(o => o.Owners) 
-                    .WithMany()
-                    .HasForeignKey(b => b.OwnerId)
-                    .OnDelete(DeleteBehavior.Restrict);     
+                b.HasOne(p => p.Owners) 
+                    .WithMany() 
+                    .HasForeignKey(p => p.OwnerId)
+                    .OnDelete(DeleteBehavior.Restrict);
+ 
             });
         }
     }

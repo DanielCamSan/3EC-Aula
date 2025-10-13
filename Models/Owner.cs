@@ -14,6 +14,7 @@ namespace FirstExam.Models
         public string Phone { get; set; } = string.Empty;
         public bool Active { get; set; } = true;
         public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public ICollection<Pet> Pets { get; set; } = new List<Pet>();
     }
 };
 
