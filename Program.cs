@@ -1,40 +1,42 @@
-using FirstExam.Controllers;
+using FirstExam.Data;
 using FirstExam.Repositories;
 using FirstExam.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// --- Configuración de CORS ---
+builder.Services.AddCors(
+    options =>
+    {
+        options.AddPolicy("MiPoliticaCors", policy =>
+        {
+            policy.WithOrigins("https://localhost:7162", "http://127.0.0.1:5500").AllowAnyMethod().AllowAnyHeader();
+        });
+    });
+
+// --- Añadir DbContext ---
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// --- Registrar Servicios y Repositorios ---
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+
+builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+builder.Services.AddScoped<IOwnerService, OwnerService>();
+
+builder.Services.AddScoped<IPetRepository, PetRepository>();
+builder.Services.AddScoped<IPetService, PetService>();
+
+
 builder.Services.AddControllers();
 
-//builder.Services.AddOpenApi();
-
-builder.Services.AddDbContext<FirstExam.Data.AppDbContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
-
-// Scoped solo para DB externo y singleton para DB en memoria
-builder.Services.AddDbContext<FirstExam.Data.AppDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
-
-// Inyecciones para Owner
-builder.Services.AddScoped<FirstExam.Repositories.IOwnerRepository, FirstExam.Repositories.OwnerRepository>();
-builder.Services.AddScoped<FirstExam.Services.IOwnerService, FirstExam.Services.OwnerService>();
-
-builder.Services.AddScoped<FirstExam.Services.IAppointmentService, FirstExam.Services.AppointmentService>();
-builder.Services.AddScoped<FirstExam.Repositories.IAppointmentRepository, FirstExam.Repositories.AppointmentRepository>();
-
-builder.Services.AddScoped<FirstExam.Services.IPetService, FirstExam.Services.PetService>();
-builder.Services.AddScoped<FirstExam.Repositories.IPetRepository, FirstExam.Repositories.PetRepository>();
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-/*if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-*/
+// --- Pipeline de Middlewares ---
 app.UseHttpsRedirection();
-
+app.UseCors("MiPoliticaCors");
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
