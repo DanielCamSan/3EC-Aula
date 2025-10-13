@@ -5,6 +5,7 @@ namespace FirstExam.Models.DTOs
     public record CreateAppointmentDto
     {
         public Guid PetId { get; init; }
+        public Guid OwnerId { get; init; }
         public DateTime ScheduledAt { get; init; }
         [Required, StringLength(100)]
         public string Reason { get; init; }
