@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace FirstExam.Models
 {
@@ -15,6 +16,7 @@ namespace FirstExam.Models
         public bool Active { get; set; } = true;
 
         public Pet? Pet { get; set; }
+        public ICollection<Appointment>? Appointments { get; set; }
     }
    
    
