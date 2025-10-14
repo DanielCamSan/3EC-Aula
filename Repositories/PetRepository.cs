@@ -39,24 +39,14 @@ namespace FirstExam.Repositories
             return await _context.Pets.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Pet?> Update(Guid id, UpdatePetDto dto)
+        public async Task Update(Pet pet)
         {
-            var pet = await _context.Pets.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (pet == null) return null;
-
-            pet.OwnerId = dto.OwnerId;
-            pet.Name = dto.Name;
-            pet.Species = dto.Species;
-            pet.Breed = dto.Breed;
-            pet.BirthDate = dto.BirthDate;
-            pet.sex = dto.sex;
-            pet.WeightKg = (dto.WeightKg != null ? dto.WeightKg : 0);
-            
-
             _context.Pets.Update(pet);
             await _context.SaveChangesAsync();
-            return pet;
+        }
+        public Task<bool> ExistsByOwnerId(Guid ownerId)
+        {
+            return _context.Pets.AsNoTracking().AnyAsync(p => p.OwnerId == ownerId);
         }
     }
 }

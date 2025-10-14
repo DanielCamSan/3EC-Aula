@@ -4,12 +4,9 @@ namespace FirstExam.Models.dtos
 {
     public class UpdateAppointmentDto
     {
-        public Guid PetId { get; set; }
-        public DateTime ScheduledAt { get; set; }
-        [Required, StringLength(100)]
-        public string Reason { get; set; }
-        [Required, StringLength(100)]
-        public string Status { get; set; }
-        public string? Notes { get; set; }
+        public Guid? PetId { get; init; }
+        public DateTime? ScheduledAt { get; init; }
+        public string? Reason { get; init; }
+        public string? Notes { get; init; }
     }
 }

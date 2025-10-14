@@ -8,7 +8,8 @@ namespace FirstExam.Repositories
         Task<IEnumerable<Owner>> GetAll();
         Task<Owner?> GetById(Guid id);
         Task Add(Owner owner);
-        Task<Owner?> Update(Guid id, UpdateOwnerDto dto);
+        Task Update(Owner owner);
         Task Delete(Guid id);
+        Task<bool> ExistsByEmail(string email);
     }
 }

@@ -2,51 +2,24 @@
 using FirstExam.Models.dtos;
 using FirstExam.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace FirstExam.Controllers
 {
     [ApiController]
     [Route("api/v1/[Controller]")]
-    public class OwnersController : Controller
+    public class OwnersController : ControllerBase
     {
         private readonly IOwnerService _service;
         public OwnersController(IOwnerService service)
         {
             _service = service;
         }
-        private static (int page, int limit) NormalizePage (int? page,int? limit)
-        {
-            var p = page.GetValueOrDefault(1); if (p<1) p=1;
-            var l = limit.GetValueOrDefault(10); if (l < 1) l = 1; if (l > 100) l = 100;
-            return (p, l);
-
-        }
-        private static IEnumerable<T> OrderbyProp<T>(IEnumerable<T> src,string? sort, string? order)
-        {
-            if (string.IsNullOrEmpty(sort)) return src;
-            var prop=typeof(T).GetProperty(sort, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-            if (prop == null) return src;
-            return string.Equals(order,"desc",StringComparison.OrdinalIgnoreCase)?src.OrderByDescending(x=>prop.GetValue(x)):src.OrderBy(x=>prop.GetValue(x));
-
-        }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int? Page, [FromQuery] int? limit, [FromQuery] string? sort, [FromQuery] string? order, [FromQuery] string? Q )
+        public async Task<IActionResult> GetAll()
         {
-
-            var(p,l)= NormalizePage(Page,limit);
-            IEnumerable<Owner> query = await _service.GetAll();
-            if (!string.IsNullOrEmpty(Q))
-            {
-                query = query.Where(a=>a.Email.Contains(Q, StringComparison.OrdinalIgnoreCase) || a.FullName.Contains(Q, StringComparison.OrdinalIgnoreCase));
-            }
-            query=OrderbyProp(query, sort, order);
-            var total = query.Count();
-            var data = query.Skip((p-1)-l).Take(l).ToList();
-            return Ok(new { data, meta = new { Page = p, limit = l, total } });
+            IEnumerable<Owner> items = await _service.GetAll();           
+            return Ok(items);
         }
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<Owner>> GetOne(Guid id)

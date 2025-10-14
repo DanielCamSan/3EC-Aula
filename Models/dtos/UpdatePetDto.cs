@@ -1,18 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 public record UpdatePetDto
 {
-    [Required]
-    public required Guid OwnerId { get; set; }
-    [Required, StringLength(100)]
-    public required string Name { get; set; }
-    [Required, StringLength(100)]
-    public required string Species { get; set; } // dog | cat | bird | reptile | other 
-    [Required, StringLength(100)]
-    public required string Breed { get; set; }
-    [Required]
-    public required DateTime BirthDate { get; set; }
-    [Required, StringLength(20)]
-    public required string sex { get; set; }
-    [Range(0, 500)]
-    public decimal? WeightKg { get; set; }
+    public Guid? OwnerId { get; init; }
+    public string? Name { get; init; } 
+    public string? Species { get; init; } 
+    public string? Breed { get; init; } 
+    public DateTime? BirthDate { get; init; }
+    public string? Sex { get; init; } 
+    public decimal? WeightKg { get; init; }
 }

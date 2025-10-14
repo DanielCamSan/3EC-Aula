@@ -5,7 +5,9 @@
         Task<List<Pet>> GetAll();
         Task<Pet?> GetById(Guid id);
         Task Add(Pet pet);
-        Task<Pet?> Update(Guid id,UpdatePetDto dto);
+        Task Update (Pet pet);
         Task Delete(Guid id);
+
+        Task<bool> ExistsByOwnerId(Guid ownerId);
     }
 }

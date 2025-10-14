@@ -8,6 +8,8 @@ namespace FirstExam.Repositories
         Task<Appointment?> GetById(Guid id);
         Task Add(Appointment appointment);
         Task Delete(Guid id);
-        Task <Appointment?> Update(Guid id, UpdateAppointmentDto appointment);
+        Task Update(Appointment appointment);
+        Task<bool> ExistsByOwnerId(Guid ownerId);
+        Task<bool> ExistsByPetId(Guid petId);
     }
 }

@@ -18,22 +18,10 @@ namespace FirstExam.Repositories
             await _context.Owners.AddAsync(owner);
             await _context.SaveChangesAsync();
         }
-        public async Task<Owner?> Update(Guid id, UpdateOwnerDto dto)
+        public async Task Update(Owner owner)
         {
-            var owner = await _context.Owners.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (owner == null) return null;
-
-            owner.Email = dto.Email.Trim();
-            owner.FullName = dto.FullName.Trim();
-            owner.Phone = dto.Phone;
-            owner.Active = dto.Active;
-            
-
-
             _context.Owners.Update(owner);
             await _context.SaveChangesAsync();
-            return owner;
         }
         public async Task Delete(Guid id)
         {
@@ -51,6 +39,10 @@ namespace FirstExam.Repositories
         public async Task<Owner?> GetById(Guid id)
         {
             return await _context.Owners.FirstOrDefaultAsync(x => x.Id == id);
+        }
+        public Task<bool> ExistsByEmail(string email)
+        {
+            return _context.Owners.AsNoTracking().AnyAsync(o => o.Email == email);
         }
 
     }

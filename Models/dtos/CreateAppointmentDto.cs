@@ -2,14 +2,16 @@
 
 namespace FirstExam.Models.dtos
 {
-    public class CreateAppointmentDto
+    public record CreateAppointmentDto
     {
+        [Required]
         public Guid PetId { get; init; }
+
+        [Required, DataType(DataType.DateTime)]
         public DateTime ScheduledAt { get; init; }
+
         [Required, StringLength(100)]
-        public string Reason { get; init; }
-        [Required, StringLength(100)]
-        public string Status { get; init; }
+        public string Reason { get; init; } = string.Empty;
         public string? Notes { get; init; }
     }
 }
