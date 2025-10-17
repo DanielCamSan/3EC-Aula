@@ -8,10 +8,14 @@ namespace FirstExam.Services
     public class AppointmentService : IAppointmentService
     {
         private readonly IAppointmentRepository _repository;
+        private readonly IPetRepository _petRepository;
+        private readonly IOwnerRepository _ownerRepository;
 
-        public AppointmentService(IAppointmentRepository repository)
+        public AppointmentService(IAppointmentRepository repository, IPetRepository petRepository, IOwnerRepository ownerRepository)
         {
             _repository = repository;
+            _petRepository = petRepository;
+            _ownerRepository = ownerRepository;
         }
 
         private static IEnumerable<T> OrderByProp<T>(IEnumerable<T> src, string? sort, string? order)
@@ -42,6 +46,13 @@ namespace FirstExam.Services
 
         public async Task<Appointment> CreateAsync(CreateAppointmentDto dto)
         {
+            var ownerExists = await _ownerRepository.GetByIdAsync(dto.OwnerId);
+            var petExists = await _petRepository.GetByIdAsync(dto.PetId);
+
+            if (ownerExists is null || petExists is null)
+            {
+                throw new InvalidOperationException("El dueño o la mascota especificados no existen.");
+            }
             var appointment = new Appointment
             {
                 Id = Guid.NewGuid(),
@@ -57,6 +68,13 @@ namespace FirstExam.Services
 
         public async Task<Appointment?> UpdateAsync(Guid id, UpdateAppointmentDto dto)
         {
+            var ownerExists = await _ownerRepository.GetByIdAsync(dto.OwnerId);
+            var petExists = await _petRepository.GetByIdAsync(dto.PetId);
+
+            if (ownerExists is null|| petExists is null)
+            {
+                throw new InvalidOperationException("El dueño o la mascota especificados no existen.");
+            }
             var existing = await _repository.GetByIdAsync(id);
             if (existing is null) return null;
 

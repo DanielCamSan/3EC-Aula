@@ -6,6 +6,8 @@ namespace FirstExam.Models.dtos
     {
         [Required]
         public Guid PetId { get; set; }
+        [Required]
+        public Guid OwnerId { get; set; }
 
         [Required]
         public DateTime ScheduledAt { get; set; }
@@ -17,5 +19,6 @@ namespace FirstExam.Models.dtos
         public string Status { get; set; } = string.Empty;
 
         public string? Notes { get; set; }
+
     }
 }

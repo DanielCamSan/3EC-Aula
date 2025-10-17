@@ -3,15 +3,16 @@ using FirstExam.Models.dtos;
 using FirstExam.Repositories;
 using System.Reflection;
 
-namespace FirstExam.Services
-{
+namespace FirstExam.Services;
     public class OwnerService : IOwnerService
     {
         private readonly IOwnerRepository _repository;
+        private readonly IPetRepository _petRepo;
 
-        public OwnerService(IOwnerRepository repository)
+        public OwnerService(IOwnerRepository repository, IPetRepository petRepo )
         {
             _repository = repository;
+            _petRepo = petRepo;
         }
 
         private static IEnumerable<T> OrderByProp<T>(IEnumerable<T> src, string? sort, string? order)
@@ -63,7 +64,7 @@ namespace FirstExam.Services
             existing.Phone = dto.Phone.Trim();
             existing.Active = dto.Active;
 
-            return await _repository.UpdateAsync(id, existing);
+            return await _repository.UpdateAsync(existing);
         }
 
         public async Task<bool> DeleteAsync(Guid id)

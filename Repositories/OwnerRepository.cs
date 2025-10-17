@@ -30,7 +30,7 @@ namespace FirstExam.Repositories
             return owner;
         }
 
-        public async Task<Owner?> UpdateAsync(Guid id, Owner owner)
+        public async Task<Owner?> UpdateAsync(Owner owner)
         {
             _context.Owners.Update(owner);
             await _context.SaveChangesAsync();

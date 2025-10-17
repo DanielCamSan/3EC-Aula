@@ -13,6 +13,7 @@ namespace FirstExam.Models.dtos
         [Required, StringLength(20, MinimumLength = 7)]
         public string Phone { get; init; } = string.Empty;
 
+        public ICollection<Pet> Pets { get; set; } = new List<Pet>();
         public bool Active { get; init; } = true;
     }
 }

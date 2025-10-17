@@ -8,10 +8,11 @@ namespace FirstExam.Services
     public class PetService : IPetService
     {
         private readonly IPetRepository _repository;
-
-        public PetService(IPetRepository repository)
+        private readonly IOwnerRepository _ownerRepo;
+        public PetService(IPetRepository repository, IOwnerRepository ownerRepo)
         {
             _repository = repository;
+            _ownerRepo = ownerRepo;
         }
 
         private static IEnumerable<T> OrderByProp<T>(IEnumerable<T> src, string? sort, string? order)
@@ -42,6 +43,12 @@ namespace FirstExam.Services
 
         public async Task<Pet> CreateAsync(CreatePetDto dto)
         {
+            var owner = await _ownerRepo.GetByIdAsync(dto.OwnerId);
+            if (owner == null)
+            {
+                throw new InvalidOperationException("No existe ese dueño");
+            }
+
             var pet = new Pet
             {
                 Id = Guid.NewGuid(),
@@ -53,6 +60,8 @@ namespace FirstExam.Services
                 sex = dto.sex.Trim(),
                 WeightKg = dto.WeightKg
             };
+            owner.Pets.Add(pet);
+            await _ownerRepo.UpdateAsync(owner);
             return await _repository.CreateAsync(pet);
         }
 
@@ -60,6 +69,15 @@ namespace FirstExam.Services
         {
             var existing = await _repository.GetByIdAsync(id);
             if (existing is null) return null;
+
+            if (existing.OwnerId != dto.OwnerId) 
+            {
+                var ownerExists = await _ownerRepo.GetByIdAsync(dto.OwnerId) != null;
+                if (!ownerExists)
+                {
+                    throw new InvalidOperationException("El nuevo dueño asignado no existe.");
+                }
+            }
 
             existing.OwnerId = dto.OwnerId;
             existing.Name = dto.Name.Trim();
@@ -74,6 +92,19 @@ namespace FirstExam.Services
 
         public async Task<bool> DeleteAsync(Guid id)
         {
+            var pet= await _repository.GetByIdAsync(id);
+            if (pet == null)
+            {
+                throw new Exception("The pet does not exist");
+
+            }
+            var owner = await _ownerRepo.GetByIdAsync(pet.OwnerId);
+            if (owner == null)
+            {
+                throw new Exception("The pet got no Owner");
+            }
+            owner.Pets.Remove(pet);
+            await _ownerRepo.UpdateAsync(owner);
             return await _repository.DeleteAsync(id);
         }
     }
