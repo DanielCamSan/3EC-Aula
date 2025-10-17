@@ -3,7 +3,7 @@ using FirstExam.Models.dtos;
 using FirstExam.Repositories;
 using System.Reflection;
 
-namespace FirstExam.Services;
+namespace FirstExam.Services { 
     public class OwnerService : IOwnerService
     {
         private readonly IOwnerRepository _repository;
