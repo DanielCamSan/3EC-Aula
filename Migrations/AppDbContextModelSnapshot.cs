@@ -29,7 +29,11 @@ namespace FirstExam.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("PetId")
                         .HasColumnType("uuid");
@@ -49,6 +53,10 @@ namespace FirstExam.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("PetId");
+
                     b.ToTable("Appointments");
                 });
 
@@ -63,7 +71,8 @@ namespace FirstExam.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -80,7 +89,7 @@ namespace FirstExam.Migrations
                     b.ToTable("Owners");
                 });
 
-            modelBuilder.Entity("Pet", b =>
+            modelBuilder.Entity("FirstExam.Models.Pet", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -117,7 +126,51 @@ namespace FirstExam.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OwnerId");
+
                     b.ToTable("Pets");
+                });
+
+            modelBuilder.Entity("FirstExam.Models.Appointment", b =>
+                {
+                    b.HasOne("FirstExam.Models.Owner", "Owner")
+                        .WithMany("Appointments")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FirstExam.Models.Pet", "Pet")
+                        .WithMany("Appointments")
+                        .HasForeignKey("PetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+
+                    b.Navigation("Pet");
+                });
+
+            modelBuilder.Entity("FirstExam.Models.Pet", b =>
+                {
+                    b.HasOne("FirstExam.Models.Owner", "Owner")
+                        .WithMany("Pets")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("FirstExam.Models.Owner", b =>
+                {
+                    b.Navigation("Appointments");
+
+                    b.Navigation("Pets");
+                });
+
+            modelBuilder.Entity("FirstExam.Models.Pet", b =>
+                {
+                    b.Navigation("Appointments");
                 });
 #pragma warning restore 612, 618
         }
